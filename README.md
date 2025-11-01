@@ -1,5 +1,5 @@
 <div align="center">
-  <h1 align="center">tekadot</h1>
+  <h1 align="center">tekkadot</h1>
   <div>
     <img alt="Static Badge" src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=%23000000&labelColor=white">
     <img alt="Static Badge" src="https://img.shields.io/badge/Tailwind%20CSS-06B6D4?style=for-the-badge&logo=tailwind%20css&logoColor=%2306B6D4&labelColor=white">
