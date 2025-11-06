@@ -38,7 +38,7 @@
     --color-lime-green-50: oklch(0.877 0.0237 131.17);
     --color-lime-green-100: oklch(0.867 0.0469 130.26);
     --color-lime-green-200: oklch(0.85 0.0944 131.17);
-    --color-lime-green-300: oklch(0.8363 0.1376 131.82)
+    --color-lime-green-300: oklch(0.8363 0.1376 131.82);
     --color-lime-green-400: oklch(0.8242 0.1772 132.83);
     --color-lime-green-500: oklch(0.8154 0.2081 133.92);
     --color-lime-green-600: oklch(0.6918 0.175 133.87);
@@ -101,5 +101,41 @@
 
     .paragraph-xs {
         @apply text-[10px] leading-[12px];
+    }
+
+    .nft-background {
+        background-image: linear-gradient(
+            to bottom,
+            var(--color-white-500) 64%,
+            var(--color-lime-green-200) 100%
+        );
+        background-repeat: no-repeat; 
+    }
+
+    .nft-background-dark {
+        background-image: linear-gradient(
+            to bottom,
+            var(--color-black-800) 68%,
+            var(--color-lime-green-700) 100%
+        );
+        background-repeat: no-repeat;
+    }
+
+    .product-background {
+        background-image: linear-gradient(
+            to bottom,
+            var(--color-white-500) 64%,
+            var(--color-vivid-pink-200) 100%
+        );
+        background-repeat: no-repeat;
+    }
+
+    .product-background-dark {
+        background-image: linear-gradient(
+            to bottom,
+            var(--color-black-800) 52%,
+            var(--color-vivid-pink-800) 100%
+        );
+        background-repeat: no-repeat;
     }
 }
