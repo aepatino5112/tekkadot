@@ -1,5 +1,5 @@
 <div align="center">
-  <h1 align="center">tekkadot</h1>
+  <h1 align="center">TekkaDot</h1>
   <div>
     <img alt="Static Badge" src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=%23000000&labelColor=white">
     <img alt="Static Badge" src="https://img.shields.io/badge/Tailwind%20CSS-06B6D4?style=for-the-badge&logo=tailwind%20css&logoColor=%2306B6D4&labelColor=white">
@@ -11,7 +11,7 @@
     <img alt="Static Badge" src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=%232496ED&labelColor=white">
   </div>
    <div align="center">
-     Official GitHub repository for tekkadot, providing client & server source code.
+     Official GitHub repository for TekkaDot, providing client & server source code.
    </div>
 </div>
 
@@ -24,7 +24,7 @@
 
 
 ## <a name="introduction">🤖 Introduction</a>
-tekkadot is a Web3-powered e-commerce platform where users can buy, sell, and trade technology products and NFTs in a decentralized environment. Our goal is to make digital and physical tech assets accessible through a secure, transparent, and community-driven marketplace.
+TekkaDot is a Web3-powered e-commerce platform where users can buy, sell, and trade technology products and NFTs in a decentralized environment. Our goal is to make digital and physical tech assets accessible through a secure, transparent, and community-driven marketplace.
 
 
 ## <a name="features">🔋 Features</a>
