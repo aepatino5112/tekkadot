@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+
 @theme inline {
     --font-main: var(--font-montserrat);
 }
@@ -58,6 +59,8 @@
     --spacing-600: 48px;
     --spacing-700: 56px;
     --spacing-800: 64px;
+
+    --text-300: var(--spacing-300);
 }
 
 @layer base {
@@ -137,5 +140,25 @@
             var(--color-vivid-pink-800) 100%
         );
         background-repeat: no-repeat;
+    }
+
+    .navbar {
+        @apply flex justify-between items-center mx-[var(--spacing-500)] mt-[var(--spacing-500)] mb-[var(--spacing-500)];
+    }
+
+    .links {
+        @apply flex text-300 justify-around items-center gap-[var(--spacing-300)] text-black-500 font-medium;
+    }
+
+    .connect-btn {
+        @apply flex justify-around items-center gap-[var(--spacing-200)];
+    }
+
+    .connect-wallet-btn-gradient {
+        background: linear-gradient(to right, #FF2670, #87DE3C);
+        color: white;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
 }
