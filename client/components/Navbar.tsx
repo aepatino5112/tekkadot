@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Sun } from 'lucide-react';
+import { Sun, Moon } from 'lucide-react';
 import GradientText from './GradientText'
 import ConnectBtn from "./ConnectBtn";
 
@@ -33,4 +33,3 @@ const Navbar: React.FC = () => {
 };
 
 export default Navbar;
-

@@ -115,7 +115,7 @@
         background-repeat: no-repeat; 
     }
 
-    .nft-background-dark {
+    .dark .nft-background {
         background-image: linear-gradient(
             to bottom,
             var(--color-black-800) 68%,
@@ -133,7 +133,7 @@
         background-repeat: no-repeat;
     }
 
-    .product-background-dark {
+    .dark .product-background {
         background-image: linear-gradient(
             to bottom,
             var(--color-black-800) 52%,
@@ -155,10 +155,31 @@
     }
 
     .connect-wallet-btn-gradient {
-        background: linear-gradient(to right, #FF2670, #87DE3C);
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(270deg, #87DE3C, #FF2670);
+        background-size: 400% 400%;
         color: white;
         border: none;
         cursor: pointer;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease;
+        animation: gradientShift 4s ease infinite;
+    }
+
+    .connect-wallet-btn-gradient:hover {
+        transform: scale(1.05);
+    }
+
+    @keyframes gradientShift {
+        0% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        100% {
+            background-position: 0% 50%;
+        }
     }
 }
