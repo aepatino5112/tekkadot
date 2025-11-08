@@ -186,7 +186,7 @@
     }
 
     .wallet-connection {
-        @apply bg-white-500 w-[899px] h-[599px]  rounded-2xl dark:bg-black-800;
+        @apply bg-white-500 w-[899px] h-[599px] rounded-2xl dark:bg-black-800;
     }
 
     .wallet-terms {
@@ -194,6 +194,46 @@
     }
 
     .wallet-option {
-        @apply flex justify-items-start items-center w-[835px] h-[105px] rounded-2xl border-[1.5px] border-white-600 bg-white-400 dark:bg-black-800;
+        @apply flex justify-start items-center w-[835px] h-[105px] rounded-2xl border-[1.5px] border-white-600 bg-white-400 dark:bg-black-800;
+    }
+
+    .wallet-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        animation: fadeIn 0.2s ease-out;
+    }
+
+    .wallet-modal-container {
+        position: relative;
+        animation: slideUp 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 }

@@ -4,12 +4,14 @@ import Link from "next/link";
 import { Sun, Moon } from 'lucide-react';
 import GradientText from './GradientText'
 import ConnectBtn from "./ConnectBtn";
+import Wallets from "./Wallets";
 import { useEffect, useState, useLayoutEffect, startTransition } from "react";
 
 const Navbar = () => {
     // Always start with false to match server render (prevents hydration mismatch)
     const [darkTheme, setDarkTheme] = useState<boolean>(false);
     const [mounted, setMounted] = useState<boolean>(false);
+    const [isWalletModalOpen, setIsWalletModalOpen] = useState<boolean>(false);
 
     // Read theme from DOM (set by script tag) after mount to sync state
     useLayoutEffect(() => {
@@ -35,6 +37,28 @@ const Navbar = () => {
             localStorage.setItem("theme", "light");
         }
     }, [darkTheme, mounted]);
+
+    // Handle ESC key to close modal and prevent body scroll when modal is open
+    useEffect(() => {
+        if (isWalletModalOpen) {
+            // Prevent body scroll when modal is open
+            document.body.style.overflow = 'hidden';
+            
+            // Handle ESC key press
+            const handleEscape = (e: KeyboardEvent) => {
+                if (e.key === 'Escape') {
+                    setIsWalletModalOpen(false);
+                }
+            };
+            
+            document.addEventListener('keydown', handleEscape);
+            
+            return () => {
+                document.body.style.overflow = 'unset';
+                document.removeEventListener('keydown', handleEscape);
+            };
+        }
+    }, [isWalletModalOpen]);
 
 
     return (
@@ -69,9 +93,18 @@ const Navbar = () => {
                             <Sun color="#17050B" className="w-[37px] h-[37px]"/>
                         )}
                     </button>
-                    <ConnectBtn />
+                    <ConnectBtn onClick={() => setIsWalletModalOpen(true)} />
                 </div>
             </nav>
+            
+            {/* Wallet Modal with Overlay */}
+            {isWalletModalOpen && (
+                <div className="wallet-modal-overlay" onClick={() => setIsWalletModalOpen(false)}>
+                    <div className="wallet-modal-container" onClick={(e) => e.stopPropagation()}>
+                        <Wallets onClose={() => setIsWalletModalOpen(false)} />
+                    </div>
+                </div>
+            )}
         </header>
     );
 };

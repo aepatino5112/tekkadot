@@ -2,7 +2,11 @@ import Link from "next/link";
 import { Wallet, X } from 'lucide-react';
 import WalletOption from "./WalletOption";
 
-const Wallets = () => {
+interface WalletsProps {
+    onClose: () => void;
+}
+
+const Wallets = ({ onClose }: WalletsProps) => {
 
     return (
         <div className="wallet-connection">
@@ -14,7 +18,9 @@ const Wallets = () => {
                             <h3 className="font-bold text-black-500 dark:text-white-500">Connect Wallet</h3>
                         </div>
                         <button
+                            onClick={onClose}
                             className="cursor-pointer"
+                            aria-label="Close wallet modal"
                         >
                             <X className="w-[34px] h-[34px] text-black-500 dark:text-white-500"/>
                         </button>
