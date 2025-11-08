@@ -6,7 +6,7 @@ import GradientText from './GradientText'
 import ConnectBtn from "./ConnectBtn";
 import { useEffect, useState, useLayoutEffect, startTransition } from "react";
 
-const Navbar: React.FC = () => {
+const Navbar = () => {
     // Always start with false to match server render (prevents hydration mismatch)
     const [darkTheme, setDarkTheme] = useState<boolean>(false);
     const [mounted, setMounted] = useState<boolean>(false);

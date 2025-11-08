@@ -61,6 +61,7 @@
     --spacing-700: 56px;
     --spacing-800: 64px;
 
+    --text-200: var(--spacing-250);
     --text-300: var(--spacing-300);
 }
 
@@ -182,5 +183,17 @@
         100% {
             background-position: 0% 50%;
         }
+    }
+
+    .wallet-connection {
+        @apply bg-white-500 w-[899px] h-[599px]  rounded-2xl dark:bg-black-800;
+    }
+
+    .wallet-terms {
+        @apply text-vivid-pink-500 underline underline-offset-2;
+    }
+
+    .wallet-option {
+        @apply flex justify-items-start items-center w-[835px] h-[105px] rounded-2xl border-[1.5px] border-white-600 bg-white-400 dark:bg-black-800;
     }
 }
