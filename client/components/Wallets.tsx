@@ -14,7 +14,7 @@ const Wallets = ({ onClose }: WalletsProps) => {
                 <div>
                     <div className="flex justify-between items-center">
                         <div className="flex items-center gap-4">
-                            <Wallet className="w-[34px] h-[34px] text-black-500 dark:text-white-500" />
+                            <Wallet className="w-[2.125rem] h-[2.125rem] text-black-500 dark:text-white-500" />
                             <h3 className="font-bold text-black-500 dark:text-white-500">Connect Wallet</h3>
                         </div>
                         <button
@@ -22,7 +22,7 @@ const Wallets = ({ onClose }: WalletsProps) => {
                             className="cursor-pointer"
                             aria-label="Close wallet modal"
                         >
-                            <X className="w-[34px] h-[34px] text-black-500 dark:text-white-500"/>
+                            <X className="w-[2.125rem] h-[2.125rem] text-black-500 dark:text-white-500"/>
                         </button>
                     </div>
                     <div>

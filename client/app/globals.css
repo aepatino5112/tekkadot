@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+html {
+    font-size: 16px;
+}
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
@@ -47,19 +51,19 @@
     --color-lime-green-700: oklch(0.5599 0.1388 133.64);
     --color-lime-green-800: oklch(0.4224 0.1013 133.45);
 
-    --spacing-0: 0px;
-    --spacing-50: 4px;
-    --spacing-100: 8px;
-    --spacing-150: 12px;
-    --spacing-200: 16px;
-    --spacing-250: 20px;
-    --spacing-300: 24px;
-    --spacing-350: 28px;
-    --spacing-400: 32px;
-    --spacing-500: 40px;
-    --spacing-600: 48px;
-    --spacing-700: 56px;
-    --spacing-800: 64px;
+    --spacing-0: 0rem;
+    --spacing-50: 0.25rem;
+    --spacing-100: 0.5rem;
+    --spacing-150: 0.75rem;
+    --spacing-200: 1rem;
+    --spacing-250: 1.25rem;
+    --spacing-300: 1.5rem;
+    --spacing-350: 1.75rem;
+    --spacing-400: 2rem;
+    --spacing-500: 2.5rem;
+    --spacing-600: 3rem;
+    --spacing-700: 3.5rem;
+    --spacing-800: 4rem;
 
     --text-200: var(--spacing-250);
     --text-300: var(--spacing-300);
@@ -67,45 +71,45 @@
 
 @layer base {
     h1 {
-        @apply text-[48px] leading-[52px] lg:text-[64px] lg:leading-[52px];
+        @apply text-[3rem] leading-[3.25rem] lg:text-[4rem] lg:leading-[3.25rem];
     }
 
     h2 {
-        @apply text-[40px] leading-[44px] lg:text-[48px] lg:leading-[52px];
+        @apply text-[2.5rem] leading-[2.75rem] lg:text-[3rem] lg:leading-[3.25rem];
     }
 
     h3 {
-        @apply text-[32px] leading-[36px] lg:text-[40px] lg:leading-[44px];
+        @apply text-[2rem] leading-[2.25rem] lg:text-[2.5rem] lg:leading-[2.75rem];
     }
 
     h4 {
-        @apply text-[28px] leading-[32px] lg:text-[32px] lg:leading-[36px];
+        @apply text-[1.75rem] leading-[2rem] lg:text-[2rem] lg:leading-[2.25rem];
     }
 
     h5 {
-        @apply text-[24px] leading-[28px];
+        @apply text-[1.5rem] leading-[1.75rem];
     }
 
     h6 {
-        @apply text-[20px] leading-[24px];
+        @apply text-[1.25rem] leading-[1.5rem];
     }
 }
 
 @layer components {
     .paragraph-lg {
-        @apply text-[20px] leading-[24px];
+        @apply text-[1.25rem] leading-[1.5rem];
     }
 
     .paragraph-md {
-        @apply text-[16px] leading-[20px];
+        @apply text-[1rem] leading-[1.25rem];
     }
 
     .paragraph-sm {
-        @apply text-[12px] leading-[16px];
+        @apply text-[0.75rem] leading-[1rem];
     }
 
     .paragraph-xs {
-        @apply text-[10px] leading-[12px];
+        @apply text-[0.625rem] leading-[0.75rem];
     }
 
     .nft-background {
@@ -186,7 +190,7 @@
     }
 
     .wallet-connection {
-        @apply bg-white-500 w-[899px] h-[599px] rounded-2xl dark:bg-black-800;
+        @apply bg-white-500 w-[56.1875rem] h-[37.4375rem] rounded-2xl dark:bg-black-800;
     }
 
     .wallet-terms {
@@ -194,7 +198,7 @@
     }
 
     .wallet-option {
-        @apply flex justify-start items-center w-[835px] h-[105px] rounded-2xl border-[1.5px] border-white-600 bg-white-400 dark:bg-black-800;
+        @apply flex justify-start items-center w-[52.1875rem] h-[6.5625rem] rounded-2xl border-[0.09375rem] border-white-600 bg-white-400 dark:bg-black-800;
     }
 
     .wallet-modal-overlay {
@@ -229,7 +233,7 @@
     @keyframes slideUp {
         from {
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(1.25rem);
         }
         to {
             opacity: 1;

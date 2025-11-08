@@ -1,5 +1,5 @@
 
-const Home: React.FC = () => {
+const Home = () => {
 
   return (
     <div>

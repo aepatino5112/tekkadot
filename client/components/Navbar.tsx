@@ -88,9 +88,9 @@ const Navbar = () => {
                         aria-label={darkTheme ? "Switch to light mode" : "Switch to dark mode"}
                     >
                         {mounted && darkTheme ? (
-                            <Moon color="#F3F4F6" className="w-[37px] h-[37px]"/>
+                            <Moon color="#F3F4F6" className="w-[2.3125rem] h-[2.3125rem]"/>
                         ) : (
-                            <Sun color="#17050B" className="w-[37px] h-[37px]"/>
+                            <Sun color="#17050B" className="w-[2.3125rem] h-[2.3125rem]"/>
                         )}
                     </button>
                     <ConnectBtn onClick={() => setIsWalletModalOpen(true)} />
