@@ -148,7 +148,7 @@
     }
 
     .links {
-        @apply flex text-300 justify-around items-center gap-[var(--spacing-300)] text-black-500 font-medium;
+        @apply flex text-300 justify-around items-center gap-[var(--spacing-300)] text-black-500 font-medium dark:text-white-500;
     }
 
     .connect-btn {

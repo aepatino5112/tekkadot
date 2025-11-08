@@ -40,7 +40,10 @@ const Navbar: React.FC = () => {
     return (
         <header>
             <nav className="navbar">
-                <Image src="/logos/tekka-red.svg" alt="TekkaDot logo" width={155.38} height={42} />
+                <div className="relative">
+                    <Image src="/logos/tekka-red.svg" alt="TekkaDot Light theme logo" width={155.48} height={42} className="block dark:hidden" />
+                    <Image src="/logos/tekka-red-dark.svg" alt="TekkaDot Light theme logo" width={155.48} height={42} className="hidden dark:block" />
+                </div>
                 <div className="links">
                     <Link href="/"><GradientText
                         colors={["#ff2670", "#87de3c", "#ff2670", "#87de3c"]}
@@ -61,9 +64,9 @@ const Navbar: React.FC = () => {
                         aria-label={darkTheme ? "Switch to light mode" : "Switch to dark mode"}
                     >
                         {mounted && darkTheme ? (
-                            <Moon className="w-[37px] h-[37px]"/>
+                            <Moon color="#F3F4F6" className="w-[37px] h-[37px]"/>
                         ) : (
-                            <Sun className="w-[37px] h-[37px]"/>
+                            <Sun color="#17050B" className="w-[37px] h-[37px]"/>
                         )}
                     </button>
                     <ConnectBtn />
