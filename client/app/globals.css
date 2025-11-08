@@ -240,4 +240,12 @@ html {
             transform: translateY(0);
         }
     }
+
+    .footer {
+        @apply flex justify-between px-10 pb-24 pt-30;
+    }
+    
+    .footer-item {
+        @apply flex flex-col items-start gap-[1.5rem];
+    }
 }

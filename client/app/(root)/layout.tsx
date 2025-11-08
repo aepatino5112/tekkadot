@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import Navbar from "@/components/Navbar";
+import FooterProducts from "@/components/FooterProducts";
 import "../globals.css";
 
 const montserrat = Montserrat({
@@ -22,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${montserrat.variable} product-background dark:product-background-dark min-h-screen`}
+        className={`${montserrat.variable} flex flex-col product-background dark:product-background-dark min-h-screen`}
       >
         <script
           dangerouslySetInnerHTML={{
@@ -41,7 +42,10 @@ export default function RootLayout({
           }}
         />
         <Navbar />
-        {children}
+        <main className="grow">
+          {children}
+        </main>
+        <FooterProducts />
       </body>
     </html>
   );
