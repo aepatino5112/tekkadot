@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { Sun, Moon } from 'lucide-react';
+import { Sun, Moon, Search } from 'lucide-react';
 import GradientText from './GradientText'
 import ConnectBtn from "./ConnectBtn";
 import Wallets from "./Wallets";
@@ -82,6 +82,12 @@ const Navbar = () => {
                     <Link href="/about-us">About Us</Link>
                 </div>
                 <div className="connect-btn">
+                    <button 
+                        className="cursor-pointer"
+                        onClick={() => true}
+                    >
+                        <Search className="w-[2.3125rem] h-[2.3125rem] text-black-500 dark:text-white-500"/>
+                    </button>
                     <button
                         onClick={() => setDarkTheme(!darkTheme)}
                         className="cursor-pointer"
