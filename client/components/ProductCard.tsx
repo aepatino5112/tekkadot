@@ -7,7 +7,13 @@ const ProductCard = ({ name, price, trustIndex, imageUrl }: ProductProps) => {
     return (
         <div className="flex flex-col w-96 h-112 items-center justify-between rounded-t-2xl rounded-r-2xl gap-[1.5rem]">
             <div className="relative w-96 h-96 rounded-2xl overflow-hidden">
-                <Image src={imageUrl} alt={name} fill className="object-cover" />
+                <Image 
+                    src={imageUrl} 
+                    alt={name} 
+                    fill 
+                    className="object-cover object-center" 
+                    sizes="(max-width: 768px) 100vw, 384px"
+                />
                 <div className="absolute top-4 right-4 flex gap-4 z-10">
                     <button className="cursor-pointer rounded-lg p-2 border-vivid-pink-600 dark:border-vivid-pink-400 border-2 bg-transparent">
                         <MessageCircle className="w-8 h-8 text-vivid-pink-600 dark:text-vivid-pink-400 fill-current stroke-none" />

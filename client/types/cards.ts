@@ -9,18 +9,13 @@ export interface Product {
     updatedAt?: Date;
 }
 
-// Interface for tags in NFTs Cards
-interface Tag {
-    id: number;
-    name: string;
-}
-
 // Interface for NFTs Cards
 export interface NFT {
     id: number;
     name: string;
     price: number;
-    tags?: Tag[];
+    rareness: string;
+    category: string;
     imageUrl: string;
     createdAt: Date;
     updatedAt?: Date;
@@ -38,6 +33,7 @@ export type ProductProps = {
 export type NFTProps = {
     name: string,
     price: number,
-    tags?: Tag[],
+    rareness: string,
+    category: string,
     imageUrl: string
 }
