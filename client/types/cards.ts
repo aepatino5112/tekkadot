@@ -20,9 +20,24 @@ export interface NFT {
     id: number;
     name: string;
     price: number;
-    trustIndex: number;
     tags?: Tag[];
     imageUrl: string;
     createdAt: Date;
     updatedAt?: Date;
+}
+
+// Type for props in Products Cards
+export type ProductProps = {
+    name: string,
+    price: number,
+    trustIndex: number,
+    imageUrl: string;
+}
+
+// Type for props in NFTs Cards
+export type NFTProps = {
+    name: string,
+    price: number,
+    tags?: Tag[],
+    imageUrl: string
 }
