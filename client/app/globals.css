@@ -248,4 +248,35 @@ html {
     .footer-item {
         @apply flex flex-col items-start gap-[1.5rem];
     }
+
+    @keyframes slide {
+        0%, 12% {
+            transform: translateY(0);
+        }
+        14%, 26% {
+            transform: translateY(calc(-1 * var(--image-height, 29rem)));
+        }
+        28%, 40% {
+            transform: translateY(calc(-2 * var(--image-height, 29rem)));
+        }
+        42%, 54% {
+            transform: translateY(calc(-3 * var(--image-height, 29rem)));
+        }
+        56%, 68% {
+            transform: translateY(calc(-4 * var(--image-height, 29rem)));
+        }
+        70%, 82% {
+            transform: translateY(calc(-5 * var(--image-height, 29rem)));
+        }
+        84%, 96% {
+            transform: translateY(calc(-6 * var(--image-height, 29rem)));
+        }
+        98%, 100% {
+            transform: translateY(calc(-7 * var(--image-height, 29rem)));
+        }
+    }
+
+    .animate-slide {
+        animation: slide 28s ease-in-out infinite;
+    }
 }
