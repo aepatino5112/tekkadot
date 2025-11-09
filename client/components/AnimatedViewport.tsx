@@ -12,10 +12,10 @@ const imageList: HeroImages[] = [
 ];
 
 const AnimatedViewport = () => {
-    const imageHeight = '29rem';
+    const imageHeight = '50.5rem';
 
     return (
-        <div className="w-[29rem] rounded-2xl relative overflow-hidden" style={{ height: imageHeight }}>
+        <div className="w-[43.5rem] rounded-2xl relative overflow-hidden" style={{ height: imageHeight }}>
             <div 
                 className="absolute animate-slide flex flex-col top-0 left-0 right-0"
                 style={{ '--image-height': imageHeight } as React.CSSProperties}
