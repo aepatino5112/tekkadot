@@ -312,6 +312,6 @@ html {
     }
 
     .drop-shadow-custom {
-        filter: drop-shadow(12px 12px 0 rgba(194, 195, 197, 0.25));
+        text-shadow: 12px 12px 0 rgba(194, 195, 197, 0.25);
     }
 }
