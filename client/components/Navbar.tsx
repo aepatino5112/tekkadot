@@ -133,18 +133,21 @@ const Navbar = () => {
                 aria-label={
                   darkTheme ? "Switch to light mode" : "Switch to dark mode"
                 }
+                aria-pressed={darkTheme}
               >
-                {mounted && darkTheme ? (
-                  <Moon
-                    color="#F3F4F6"
-                    className="w-[2.3125rem] h-[2.3125rem]"
-                  />
-                ) : (
+                {/* overlapping icons that animate via globals.css */}
+                <span className="theme-toggle" aria-hidden={false}>
                   <Sun
                     color="#17050B"
-                    className="w-[2.3125rem] h-[2.3125rem]"
+                    className={
+                      mounted && !darkTheme ? "icon-show" : "icon-hide"
+                    }
                   />
-                )}
+                  <Moon
+                    color="#F3F4F6"
+                    className={mounted && darkTheme ? "icon-show" : "icon-hide"}
+                  />
+                </span>
               </button>
             </>
           )}
