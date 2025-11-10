@@ -2,8 +2,8 @@ import AnimatedViewport from "./AnimatedViewport";
 
 const Hero = () => {
   return (
-    <section className="flex flex-col-reverse md:flex-row items-center justify-between gap-6 md:gap-0 py2 px-4 md:px-0">
-      <div className="flex flex-col justify-center gap-6 md:gap-9 max-w-xl w-full md:w-1/2 text-center md:text-left min-w-0">
+    <section className="flex flex-col-reverse md:flex-row items-center justify-between gap-6 md:gap-0 px-4 md:px-0">
+      <div className="flex flex-col justify-center gap-6 md:gap-9 w-full md:w-2/3 text-center md:text-left min-w-0">
         <div>
           <h1 className="font-semibold text-black-500 dark:text-white-500">
             Shop Transparently.
