@@ -48,5 +48,5 @@ export type FeaturedProductsProps = {
 
 // Type for featured NFTs props
 export type FeaturedNFTsProps = {
-    nfts: NFTProps
+    nfts: NFTProps[]
 }
