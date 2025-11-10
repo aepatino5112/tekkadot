@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${montserrat.variable} flex flex-col product-background dark:product-background-dark min-h-screen`}
+        className={`${montserrat.variable} flex flex-col product-background dark:product-background-dark min-h-screen overflow-x-hidden`}
       >
         <script
           dangerouslySetInnerHTML={{

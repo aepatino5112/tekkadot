@@ -3,7 +3,7 @@ import Link from "next/link";
 const DiagonalSelector = () => {
 
     return (
-        <section className="relative w-[107.938rem] h-[55.438rem] overflow-visible">
+        <section className="relative w-screen h-[55.438rem] overflow-visible -mx-10 mt-42 mb-30">
             <Link href="/products" className="absolute inset-0 z-10 clip-left group">
                 <div className="absolute inset-0 bg-[url(/selector/products.jpg)] bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-[1.08]"></div>
             </Link>
