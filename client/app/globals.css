@@ -299,7 +299,19 @@ html {
         will-change: opacity;
     }
     
+    .clip-left {
+        clip-path: polygon(0 0, 100% 0, 0 100%);
+    }
+
+    .clip-right {
+        clip-path: polygon(100% 0, 100% 100%, 0 100%);
+    }
+
     .drop-shadow-lg {
         filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.5));
+    }
+
+    .drop-shadow-custom {
+        filter: drop-shadow(12px 12px 0 rgba(194, 195, 197, 0.25));
     }
 }
