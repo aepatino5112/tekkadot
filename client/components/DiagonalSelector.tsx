@@ -4,10 +4,12 @@ const DiagonalSelector = () => {
 
     return (
         <section className="relative w-[107.938rem] h-[55.438rem] overflow-visible">
-            <Link href="/products" className="absolute inset-0 z-10 clip-left bg-[url(/selector/products.jpg)] bg-cover bg-center">
+            <Link href="/products" className="absolute inset-0 z-10 clip-left group">
+                <div className="absolute inset-0 bg-[url(/selector/products.jpg)] bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-[1.08]"></div>
             </Link>
 
-            <Link href="/nfts" className="absolute inset-0 z-10 clip-right bg-[url(/selector/nfts.jpg)] bg-cover bg-center">
+            <Link href="/nfts" className="absolute inset-0 z-10 clip-right group">
+                <div className="absolute inset-0 bg-[url(/selector/nfts.jpg)] bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-[1.08]"></div>
             </Link>
 
             <div className="absolute inset-0 z-30 pointer-events-none">
