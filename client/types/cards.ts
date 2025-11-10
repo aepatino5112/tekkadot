@@ -23,6 +23,7 @@ export interface NFT {
 
 // Type for props in Products Cards
 export type ProductProps = {
+    id: number,
     name: string,
     price: number,
     trustIndex: number,
@@ -31,9 +32,21 @@ export type ProductProps = {
 
 // Type for props in NFTs Cards
 export type NFTProps = {
+    id: number,
     name: string,
     price: number,
     rareness: string,
     category: string,
     imageUrl: string
+}
+
+// Type for featured products props
+export type FeaturedProductsProps = {
+    products: ProductProps[]
+}
+
+
+// Type for featured NFTs props
+export type FeaturedNFTsProps = {
+    nfts: NFTProps
 }
