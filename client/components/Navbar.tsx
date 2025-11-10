@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { Sun, Moon, Search, Menu, X } from "lucide-react";
+import { Sun, Moon, Search, Menu, X, Wallet } from "lucide-react";
 import GradientText from "./GradientText";
 import ConnectBtn from "./ConnectBtn";
 import Wallets from "./Wallets";
@@ -116,36 +116,47 @@ const Navbar = () => {
         </div>
 
         <div className="connect-btn flex items-center gap-3">
-          <button
-            className="cursor-pointer hidden sm:inline-flex"
-            onClick={() => true}
-            aria-label="Search"
-          >
-            <Search className="w-[2.3125rem] h-[2.3125rem] text-black-500 dark:text-white-500" />
-          </button>
+          {/* Keep search and theme toggle on the navbar when burger is closed */}
+          {!isMobileMenuOpen && (
+            <>
+              <button
+                className="cursor-pointer p-2"
+                onClick={() => true}
+                aria-label="Search"
+              >
+                <Search className="w-[2.3125rem] h-[2.3125rem] text-black-500 dark:text-white-500" />
+              </button>
 
-          <button
-            onClick={() => setDarkTheme(!darkTheme)}
-            className="cursor-pointer p-1 rounded"
-            aria-label={
-              darkTheme ? "Switch to light mode" : "Switch to dark mode"
-            }
-          >
-            {mounted && darkTheme ? (
-              <Moon color="#F3F4F6" className="w-[2.3125rem] h-[2.3125rem]" />
-            ) : (
-              <Sun color="#17050B" className="w-[2.3125rem] h-[2.3125rem]" />
-            )}
-          </button>
+              <button
+                onClick={() => setDarkTheme(!darkTheme)}
+                className="cursor-pointer p-1 rounded"
+                aria-label={
+                  darkTheme ? "Switch to light mode" : "Switch to dark mode"
+                }
+              >
+                {mounted && darkTheme ? (
+                  <Moon
+                    color="#F3F4F6"
+                    className="w-[2.3125rem] h-[2.3125rem]"
+                  />
+                ) : (
+                  <Sun
+                    color="#17050B"
+                    className="w-[2.3125rem] h-[2.3125rem]"
+                  />
+                )}
+              </button>
+            </>
+          )}
 
-          {/* Connect button visible on desktop, hidden in mobile header (will appear in mobile menu) */}
+          {/* Connect button visible on desktop, hidden in mobile header (will appear in mobile menu top) */}
           <div className="hidden md:block">
             <ConnectBtn onClick={() => setIsWalletModalOpen(true)} />
           </div>
 
           {/* Mobile burger button */}
           <button
-            className="md:hidden p-2"
+            className="md:hidden p-2 text-black dark:text-white"
             onClick={() => setIsMobileMenuOpen(true)}
             aria-label="Open menu"
             aria-expanded={isMobileMenuOpen}
@@ -170,93 +181,114 @@ const Navbar = () => {
         </div>
       )}
 
-      {/* Mobile menu overlay / drawer */}
+      {/* Mobile menu - full screen split: top area = main color (logo, connect icon+text, close), bottom area = page bg (light/dark) with links */}
       {isMobileMenuOpen && (
-        <div className="mobile-menu-overlay fixed inset-0 z-50 flex">
-          {/* dimmed backdrop */}
+        <div
+          className="mobile-menu-overlay fixed inset-0 z-50 flex flex-col"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Mobile menu"
+        >
+          {/* backdrop */}
           <div
             className="absolute inset-0 bg-black/40"
             onClick={() => setIsMobileMenuOpen(false)}
+            aria-hidden
           />
 
-          {/* drawer */}
-          <div className="relative ml-auto w-[82%] max-w-xs bg-white dark:bg-zinc-900 h-full p-6 flex flex-col gap-6">
-            <div className="flex items-center justify-between">
+          {/* content container (stacked) */}
+          <div className="relative z-10 h-full flex flex-col">
+            {/* Top bar: main brand color */}
+            <div
+              className="flex items-center justify-between px-6 py-5"
+              style={{ backgroundColor: "#ff2670" }} /* main color */
+            >
               <div className="flex items-center gap-3">
                 <Image
                   src="/logos/tekka-red.svg"
                   alt="logo"
-                  width={120}
-                  height={32}
+                  width={140}
+                  height={36}
                   className="block dark:hidden"
                 />
                 <Image
                   src="/logos/tekka-red-dark.svg"
                   alt="logo dark"
-                  width={120}
-                  height={32}
+                  width={140}
+                  height={36}
                   className="hidden dark:block"
                 />
               </div>
-              <button
-                className="p-2"
-                onClick={() => setIsMobileMenuOpen(false)}
-                aria-label="Close menu"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
 
-            <nav className="flex flex-col gap-4 text-lg">
-              <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>
-                Home
-              </Link>
-              <Link href="/products" onClick={() => setIsMobileMenuOpen(false)}>
-                Products
-              </Link>
-              <Link href="/nfts" onClick={() => setIsMobileMenuOpen(false)}>
-                NFTs
-              </Link>
-              <Link href="/about-us" onClick={() => setIsMobileMenuOpen(false)}>
-                About Us
-              </Link>
-            </nav>
-
-            <div className="mt-auto flex flex-col gap-3">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
+                {/* simplified connect wallet (no background) */}
                 <button
-                  onClick={() => {
-                    setDarkTheme(!darkTheme);
-                  }}
-                  className="flex items-center gap-2 p-2 rounded"
-                  aria-label="Toggle theme"
-                >
-                  {mounted && darkTheme ? (
-                    <Moon className="w-5 h-5" />
-                  ) : (
-                    <Sun className="w-5 h-5" />
-                  )}
-                  <span className="text-sm">
-                    {darkTheme ? "Dark" : "Light"}
-                  </span>
-                </button>
-                <button
-                  className="ml-auto p-2"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  aria-hidden
-                >
-                  <Search className="w-5 h-5" />
-                </button>
-              </div>
-
-              <div>
-                <ConnectBtn
                   onClick={() => {
                     setIsMobileMenuOpen(false);
                     setIsWalletModalOpen(true);
                   }}
-                />
+                  className="flex items-center gap-2 text-white bg-transparent p-0"
+                  aria-label="Connect Wallet"
+                >
+                  <Wallet className="w-5 h-5" />
+                  <span className="text-sm font-medium">Connect Wallet</span>
+                </button>
+
+                <button
+                  className="p-2 rounded"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  aria-label="Close menu"
+                >
+                  <X className="w-6 h-6 text-white" />
+                </button>
               </div>
+            </div>
+
+            {/* Menu options area: uses page background depending on theme and is scrollable */}
+            <div className="flex-1 overflow-auto bg-white dark:bg-zinc-950 px-6 py-8">
+              <nav className="flex flex-col gap-8 items-start">
+                <Link
+                  href="/"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-4xl font-semibold text-tekka-dark dark:text-white"
+                >
+                  <GradientText
+                    colors={["#ff2670", "#87de3c", "#ff2670", "#87de3c"]}
+                    animationSpeed={6}
+                    showBorder={false}
+                    className="text-4xl"
+                  >
+                    Home
+                  </GradientText>
+                </Link>
+
+                <Link
+                  href="/products"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-3xl font-medium text-black dark:text-white"
+                >
+                  Products
+                </Link>
+
+                <Link
+                  href="/nfts"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-3xl font-medium text-black dark:text-white"
+                >
+                  NFTs
+                </Link>
+
+                <Link
+                  href="/about-us"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-3xl font-medium text-black dark:text-white"
+                >
+                  About Us
+                </Link>
+              </nav>
+
+              {/* spacing at bottom; removed search, theme toggle and connect from the menu options per request */}
+              <div className="h-20" />
             </div>
           </div>
         </div>
