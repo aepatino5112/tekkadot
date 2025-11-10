@@ -279,4 +279,23 @@ html {
     .animate-slide {
         animation: slide 28s ease-in-out infinite;
     }
+
+    @keyframes nft-bg {
+        0%, 49% { opacity: 0; }
+      
+        /* Fade in */
+        54% { opacity: 1; }
+      
+        /* Hold visibility */
+        56%, 58% { opacity: 1; }
+      
+        /* Extended fade-out */
+        70%, 90% { opacity: 0; }
+    }
+      
+    .animate-nft-bg {
+        animation: nft-bg 28s ease-in-out infinite;
+        animation-fill-mode: both;
+        will-change: opacity;
+    }               
 }
