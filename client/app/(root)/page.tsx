@@ -24,10 +24,10 @@ const nfts: NFTProps[] = [
 const Home = () => {
 
   return (
-    <div className="flex flex-col mx-10">
+    <div className="flex flex-col w-full px-10 min-w-0 overflow-x-hidden">
       <Hero />
-      <FeaturedProducts products={products}/>
-      <FeaturedNFTs nfts={nfts}/>
+      <FeaturedProducts products={products} />
+      <FeaturedNFTs nfts={nfts} />
       <DiagonalSelector />
     </div>
   );

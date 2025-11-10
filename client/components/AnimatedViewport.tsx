@@ -12,10 +12,10 @@ const imageList: HeroImages[] = [
 ];
 
 const AnimatedViewport = () => {
-    const imageHeight = '50.5rem';
+    const imageHeight = '42rem';
 
     return (
-        <div className="w-174 rounded-2xl relative overflow-hidden" style={{ height: imageHeight }}>
+        <div className="w-152 rounded-2xl relative overflow-hidden" style={{ height: imageHeight }}>
             {/* Default background: static */}
             <Image
                 src="/images/product.svg"

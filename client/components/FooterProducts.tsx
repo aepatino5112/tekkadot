@@ -13,20 +13,20 @@ const FooterProducts = () => {
                 <p className="paragraph-lg font-light text-black-500 dark:text-white-500">© 2025 TekkaDot. All rights reserved.</p>
             </div>
             <div className="flex justify-between items-start gap-30">
-                <div className="footer-item mr-30">
+                <div className="footer-item mr-10">
                     <h5 className="text-vivid-pink-500 font-bold">MARKETPLACE</h5>
                     <Link href="products"><p className="paragraph-lg font-light text-black-500 dark:text-white-500">Products</p></Link>
                     <Link href="nfts"><p className="paragraph-lg font-light text-black-500 dark:text-white-500">NFTs</p></Link>
                     <Link href="/tutorial"><p className="paragraph-lg font-light text-black-500 dark:text-white-500">How It Works</p></Link>
                 </div>
-                <div className="footer-item mr-30">
+                <div className="footer-item mr-10">
                     <h5 className="text-vivid-pink-500 font-bold">ABOUT US</h5>
                     <Link href="about-us"><p className="paragraph-lg font-light text-black-500 dark:text-white-500">Who are we</p></Link>
                     <Link href="/mission"><p className="paragraph-lg font-light text-black-500 dark:text-white-500">Our mission</p></Link>
                     <Link href="/vission"><p className="paragraph-lg font-light text-black-500 dark:text-white-500">Our vission</p></Link>
                     <Link href="/allies"><p className="paragraph-lg font-light text-black-500 dark:text-white-500">Our allies</p></Link>
                 </div>
-                <div className="footer-item mr-30">
+                <div className="footer-item mr-10">
                     <h5 className="text-vivid-pink-500 font-bold">LEGAL</h5>
                     <Link href="/service-terms"><p className="paragraph-lg font-light text-black-500 dark:text-white-500">Terms of Service</p></Link>
                     <Link href="/privacy-policy"><p className="paragraph-lg font-light text-black-500 dark:text-white-500">Privacy Policy</p></Link>

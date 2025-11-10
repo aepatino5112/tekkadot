@@ -6,7 +6,7 @@ const FeaturedProducts = ({ products  }: FeaturedProductsProps ) => {
     return (
         <section className="flex flex-col justify-start mt-73 mb-[4rem] gap-[3.5rem]">
             <h2 className="text-black-500 dark:text-white-500 font-semibold">Featured Products</h2>
-            <div className="flex justify-between items-center gap-[1.5rem]">
+            <div className="grid grid-cols-4 gap-[1.5rem] items-start w-full">
                 {products.map((product) => (
                     <ProductCard 
                         key={product.id + "-product"}
