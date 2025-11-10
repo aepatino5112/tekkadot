@@ -1,36 +1,28 @@
 @import "tailwindcss";
 
 /* Prevent viewport overflow and ensure media behaves */
-html,
-body {
-    box-sizing: border-box;
-    max-width: 100vw;
-    /* never exceed viewport width */
-    overflow-x: hidden;
-    /* hide accidental horizontal overflow */
+html, body {
+  box-sizing: border-box;
+  max-width: 100vw; /* never exceed viewport width */
+  overflow-x: hidden; /* hide accidental horizontal overflow */
 }
 
 /* Ensure all elements use border-box sizing */
-*,
-*::before,
-*::after {
-    box-sizing: inherit;
+*, *::before, *::after {
+  box-sizing: inherit;
 }
 
 /* Make images and videos responsive so they won't force overflow */
-img,
-picture,
-video,
-iframe {
-    max-width: 100%;
-    height: auto;
-    display: block;
+img, picture, video, iframe {
+  max-width: 100%;
+
 }
 
 /* Utility: allow flex children to shrink (use where needed) */
 .min-w-0 {
-    min-width: 0;
+  min-width: 0;
 }
+
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -330,15 +322,15 @@ iframe {
     .clip-left {
         clip-path: polygon(0 0, 100% 0, 0 100%);
     }
-
+    
     .clip-right {
         clip-path: polygon(100% 0, 100% 100%, 0 100%);
     }
-
+    
     .drop-shadow-lg {
         filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.5));
     }
-
+    
     .drop-shadow-custom {
         text-shadow: 12px 12px 0 rgba(194, 195, 197, 0.25);
     }
