@@ -6,7 +6,7 @@ import { MoveUpRight } from 'lucide-react';
 const FeaturedProducts = ({ products  }: FeaturedProductsProps ) => {
 
     return (
-        <section className="flex flex-col justify-start mt-73 mb-[4rem] gap-[3.5rem]">
+        <section className="flex flex-col justify-start mt-73 gap-[3.5rem]">
             <div className="flex justify-between">
                 <h2 className="text-black-500 dark:text-white-500 font-semibold">Featured Products</h2>
                 <Link href="/products" className="flex items-center gap-1.5">
