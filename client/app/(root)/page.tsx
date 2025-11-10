@@ -2,6 +2,7 @@ import Hero from "@/components/Hero";
 import FeaturedProducts from "@/components/FeaturedProducts";
 import FeaturedNFTs from "@/components/FeaturedNFTs";
 import DiagonalSelector from "@/components/DiagonalSelector";
+import GlassButton from "@/components/GlassButton";
 import { type ProductProps, NFTProps } from "@/types/cards";
 
 
@@ -29,6 +30,7 @@ const Home = () => {
       <FeaturedProducts products={products}/>
       <FeaturedNFTs nfts={nfts}/>
       <DiagonalSelector />
+      <GlassButton content="Join the Club - Subscribe with your Wallet" />
     </div>
   );
 };

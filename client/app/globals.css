@@ -314,6 +314,21 @@ html {
     .drop-shadow-custom {
         text-shadow: 12px 12px 0 rgba(194, 195, 197, 0.25);
     }
+
+    .glass-effect {
+        background: rgba(220, 220, 220, 0.1); /* #DCDCDC @ 10% */
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.4); /* white @ 40% */
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* subtle depth */
+        transition: all 0.3s ease;
+    }
+    
+    .glass-effect:hover {
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+    }
 }
 
 @layer utilities {
