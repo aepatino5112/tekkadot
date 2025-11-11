@@ -211,18 +211,6 @@ iframe {
         }
     }
 
-    .wallet-connection {
-        @apply bg-white-500 w-[56.1875rem] h-[37.4375rem] rounded-2xl dark:bg-black-800;
-    }
-
-    .wallet-terms {
-        @apply text-vivid-pink-500 underline underline-offset-2;
-    }
-
-    .wallet-option {
-        @apply flex justify-start items-center w-[52.1875rem] h-[6.5625rem] rounded-2xl border-[0.09375rem] border-white-600 bg-white-400 dark:bg-black-800;
-    }
-
     .wallet-modal-overlay {
         position: fixed;
         top: 0;
@@ -236,33 +224,57 @@ iframe {
         align-items: center;
         z-index: 1000;
         animation: fadeIn 0.2s ease-out;
+        padding: 1.25rem;
+        /* allow some inset on small screens */
     }
 
     .wallet-modal-container {
         position: relative;
         animation: slideUp 0.3s ease-out;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-        }
+    .wallet-connection {
+        /* responsive sizing: full width up to the original design width, max height constrained for small viewports */
+        @apply bg-white-500 rounded-2xl dark:bg-black-800 w-full max-w-[56.1875rem] max-h-[90vh] overflow-y-auto;
+        @apply p-6;
+        /* padding inside the modal */
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    }
 
-        to {
-            opacity: 1;
+    /* smaller padding and slightly less rounded corners on very small screens */
+    @media (max-width: 480px) {
+        .wallet-connection {
+            @apply p-4 rounded-lg;
         }
     }
 
-    @keyframes slideUp {
-        from {
-            opacity: 0;
-            transform: translateY(1.25rem);
+    .wallet-option {
+        /* allow each option to fill modal width but keep a max width so layout matches design on large screens */
+        @apply flex justify-start items-center w-full max-w-[52.1875rem] h-[6.5625rem] rounded-2xl border-[0.09375rem] border-white-600 bg-white-400 dark:bg-black-800;
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+    }
+
+    @media (max-width: 480px) {
+        .wallet-option {
+            height: auto;
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+            gap: 1rem;
         }
 
-        to {
-            opacity: 1;
-            transform: translateY(0);
+        .wallet-option img {
+            width: 64px;
+            height: 64px;
         }
+    }
+
+    .wallet-terms {
+        @apply text-vivid-pink-500 underline underline-offset-2;
     }
 
     .footer {
