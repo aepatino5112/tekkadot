@@ -420,4 +420,48 @@ iframe {
             transition: none;
         }
     }
+
+    /* cleaner divider between header (last-updated) and the terms box */
+    .terms-divider {
+        width: 100%;
+        max-width: 78rem; /* align with the page container */
+        height: 1px;
+        margin: 0.75rem 0;
+        border-radius: 2px;
+        background: color-mix(in srgb, var(--color-black-500) 10%, transparent);
+        opacity: 0.6;
+    }
+
+    .dark .terms-divider {
+        background: color-mix(in srgb, var(--color-white-500) 8%, transparent);
+        opacity: 0.35;
+    }
+
+    /* rounded, bordered container for Agreement to Terms */
+    .terms-box {
+        @apply rounded-xl p-6 sm:p-8 mt-4;
+        border: 1px solid var(--color-white-400);
+        background: linear-gradient(180deg, color-mix(in srgb, var(--color-white-500) 3%, transparent), transparent);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        color: var(--color-black-500);
+        overflow: hidden;
+    }
+
+    .dark .terms-box {
+        border: 1px solid var(--color-black-400);
+        background: linear-gradient(180deg, color-mix(in srgb, var(--color-black-800) 6%, transparent), transparent);
+        color: var(--color-white-500);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+    }
+
+    /* keep the content readable on small screens */
+    @media (max-width: 640px) {
+        .terms-box {
+            padding: 1rem;
+            border-radius: 0.75rem;
+        }
+        .terms-divider {
+            margin: 0.5rem 0;
+        }
+    }
 }
