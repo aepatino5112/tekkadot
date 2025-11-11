@@ -32,7 +32,6 @@ const Home = () => {
       <FeaturedNFTs nfts={nfts}/>
       <DiagonalSelector />
       <Newsletter />
-      <GlassButton content="Join the Club - Subscribe with your Wallet" />
     </div>
   );
 };
