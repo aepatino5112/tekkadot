@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { MoveLeft } from "lucide-react";
 
 
-const Home = () => {
+const TermsOfService = () => {
   const router = useRouter();
 
   return (
@@ -128,4 +128,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default TermsOfService;

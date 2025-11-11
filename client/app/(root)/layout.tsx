@@ -42,9 +42,9 @@ export default function RootLayout({
             `,
           }}
         />
-        <Navbar variant="nfts"/>
+        <Navbar />
         <main className="grow">{children}</main>
-        <Footer variant="nfts" />
+        <Footer />
       </body>
     </html>
   );
