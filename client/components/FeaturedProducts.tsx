@@ -1,5 +1,7 @@
+import Link from "next/link";
 import ProductCard from "./ProductCard";
 import { type FeaturedProductsProps } from "@/types/cards";
+import { MoveUpRight } from 'lucide-react';
 
 const FeaturedProducts = ({ products }: FeaturedProductsProps) => {
   return (

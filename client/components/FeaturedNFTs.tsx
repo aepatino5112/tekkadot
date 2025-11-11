@@ -1,5 +1,7 @@
 import NFTCard from "./NFTCard";
+import Link from "next/link";
 import { type FeaturedNFTsProps } from "@/types/cards";
+import { MoveUpRight } from 'lucide-react';
 
 const FeaturedNFTs = ({ nfts }: FeaturedNFTsProps) => {
   return (
