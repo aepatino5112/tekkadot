@@ -7,13 +7,28 @@ import ConnectBtn from "./ConnectBtn";
 import Wallets from "./Wallets";
 import { useEffect, useState, useLayoutEffect, startTransition } from "react";
 
-const Navbar = () => {
+type Variant = "default" | "products" | "nfts";
+
+interface NavbarProps {
+  variant?: Variant;
+  // optional overrides
+  logoLight?: string;
+  logoDark?: string;
+  brandColor?: string;
+  showConnect?: boolean;
+}
+
+const Navbar = ({
+  variant = "default",
+  logoLight,
+  logoDark,
+  brandColor,
+  showConnect = true,
+}: NavbarProps) => {
   // Always start with false to match server render (prevents hydration mismatch)
   const [darkTheme, setDarkTheme] = useState<boolean>(false);
   const [mounted, setMounted] = useState<boolean>(false);
   const [isWalletModalOpen, setIsWalletModalOpen] = useState<boolean>(false);
-
-  // new: mobile menu state
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
   // Read theme from DOM (set by script tag) after mount to sync state
@@ -78,27 +93,51 @@ const Navbar = () => {
     }
   }, [isMobileMenuOpen]);
 
+  // determine branding resources
+  const brands = {
+    default: {
+      light: "/logos/tekka-red.svg",
+      dark: "/logos/tekka-red-dark.svg",
+      color: "#ff2670",
+    },
+    products: {
+      light: "/logos/tekka-red.svg",
+      dark: "/logos/tekka-red-dark.svg",
+      color: "#ff2670",
+    },
+    nfts: {
+      light: "/logos/tekka-green.svg",
+      dark: "/logos/tekka-green-dark.svg",
+      color: "#87de3c",
+    },
+  };
+
+  const brand = {
+    light: logoLight ?? brands[variant].light,
+    dark: logoDark ?? brands[variant].dark,
+    color: brandColor ?? brands[variant].color,
+  };
+
   return (
     <header>
       <nav className="navbar flex items-center justify-between px-4 py-3 md:px-8">
         <div className="relative flex items-center gap-4">
           <Image
-            src="/logos/tekka-red.svg"
-            alt="TekkaDot Light theme logo"
+            src={brand.light}
+            alt="logo light"
             width={155.48}
             height={42}
             className="block dark:hidden"
           />
           <Image
-            src="/logos/tekka-red-dark.svg"
-            alt="TekkaDot Light theme logo"
+            src={brand.dark}
+            alt="logo dark"
             width={155.48}
             height={42}
             className="hidden dark:block"
           />
         </div>
 
-        {/* Desktop links - hidden on mobile */}
         <div className="links hidden md:flex gap-6 items-center text-sm md:text-base lg:text-lg">
           <Link href="/">
             <GradientText
@@ -135,7 +174,6 @@ const Navbar = () => {
                 }
                 aria-pressed={darkTheme}
               >
-                {/* overlapping icons that animate via globals.css */}
                 <span className="theme-toggle" aria-hidden={false}>
                   <Sun
                     color="#17050B"
@@ -152,12 +190,12 @@ const Navbar = () => {
             </>
           )}
 
-          {/* Connect button visible on desktop, hidden in mobile header (will appear in mobile menu top) */}
-          <div className="hidden md:block">
-            <ConnectBtn onClick={() => setIsWalletModalOpen(true)} />
-          </div>
+          {showConnect && (
+            <div className="hidden md:block">
+              <ConnectBtn onClick={() => setIsWalletModalOpen(true)} />
+            </div>
+          )}
 
-          {/* Mobile burger button */}
           <button
             className="md:hidden p-2 text-black dark:text-white"
             onClick={() => setIsMobileMenuOpen(true)}
@@ -204,18 +242,18 @@ const Navbar = () => {
             {/* Top bar: main brand color */}
             <div
               className="flex items-center justify-between px-6 py-5"
-              style={{ backgroundColor: "#ff2670" }} /* main color */
+              style={{ backgroundColor: brand.color }} /* main color */
             >
               <div className="flex items-center gap-3">
                 <Image
-                  src="/logos/tekka-red.svg"
+                  src={brand.light}
                   alt="logo"
                   width={140}
                   height={36}
                   className="block dark:hidden"
                 />
                 <Image
-                  src="/logos/tekka-red-dark.svg"
+                  src={brand.dark}
                   alt="logo dark"
                   width={140}
                   height={36}
