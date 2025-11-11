@@ -3,32 +3,34 @@ import Link from "next/link";
 import { type FeaturedNFTsProps } from "@/types/cards";
 import { MoveUpRight } from 'lucide-react';
 
-const FeaturedNFTs = ({ nfts  }: FeaturedNFTsProps ) => {
+const FeaturedNFTs = ({ nfts }: FeaturedNFTsProps) => {
+  return (
+    <section className="flex flex-col justify-start mb-12 gap-8">
+      <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-black-500 dark:text-white-500">
+        Featured NFTs
+      </h2>
 
-    return (
-        <section className="flex flex-col justify-start mt-32 mb-42 gap-[3.5rem]">
-            <div className="flex justify-between">
-                <h2 className="text-black-500 dark:text-white-500 font-semibold">Featured NFTs</h2>
-                <Link href="/nfts" className="flex items-center gap-1.5">
-                    <p className="text-[2rem] font-medium text-lime-green-600 dark:text-lime-green-400 underline-hover">All NFTs</p>
-                    <MoveUpRight className="w-[1.896rem] h-[1.799rem] text-lime-green-600 dark:text-lime-green-400" />
-                </Link>
-            </div>
-            <div className="flex justify-between items-center gap-[1.5rem]">
-                {nfts.map((nft) => (
-                    <NFTCard 
-                        key={nft.id + "-nft"}
-                        id={nft.id} 
-                        name={nft.name} 
-                        price={nft.price} 
-                        rareness={nft.rareness}
-                        category={nft.category} 
-                        imageUrl={nft.imageUrl} 
-                    />
-                ))}
-            </div>
-        </section>
-    );
+      {/* Responsive grid:
+          - mobile: 1 column (big cards)
+          - sm: 2 columns
+          - md: 3 columns
+          - lg: 4 columns
+      */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 w-full">
+        {nfts.map((nft) => (
+          <NFTCard
+            key={nft.id + "-nft"}
+            id={nft.id}
+            name={nft.name}
+            price={nft.price}
+            rareness={nft.rareness}
+            category={nft.category}
+            imageUrl={nft.imageUrl}
+          />
+        ))}
+      </div>
+    </section>
+  );
 };
 
 export default FeaturedNFTs;

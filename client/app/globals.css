@@ -1,8 +1,36 @@
 @import "tailwindcss";
 
-html {
-    font-size: 16px;
+/* Prevent viewport overflow and ensure media behaves */
+html,
+body {
+    box-sizing: border-box;
+    max-width: 100vw;
+    /* never exceed viewport width */
+    overflow-x: hidden;
+    /* hide accidental horizontal overflow */
 }
+
+/* Ensure all elements use border-box sizing */
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+/* Make images and videos responsive so they won't force overflow */
+img,
+picture,
+video,
+iframe {
+    max-width: 100%;
+
+}
+
+/* Utility: allow flex children to shrink (use where needed) */
+.min-w-0 {
+    min-width: 0;
+}
+
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -113,38 +141,30 @@ html {
     }
 
     .nft-background {
-        background-image: linear-gradient(
-            to bottom,
-            var(--color-white-500) 64%,
-            var(--color-lime-green-200) 100%
-        );
-        background-repeat: no-repeat; 
+        background-image: linear-gradient(to bottom,
+                var(--color-white-500) 64%,
+                var(--color-lime-green-200) 100%);
+        background-repeat: no-repeat;
     }
 
     .dark .nft-background {
-        background-image: linear-gradient(
-            to bottom,
-            var(--color-black-800) 68%,
-            var(--color-lime-green-700) 100%
-        );
+        background-image: linear-gradient(to bottom,
+                var(--color-black-800) 68%,
+                var(--color-lime-green-700) 100%);
         background-repeat: no-repeat;
     }
 
     .product-background {
-        background-image: linear-gradient(
-            to bottom,
-            var(--color-white-500) 64%,
-            var(--color-vivid-pink-200) 100%
-        );
+        background-image: linear-gradient(to bottom,
+                var(--color-white-500) 64%,
+                var(--color-vivid-pink-200) 100%);
         background-repeat: no-repeat;
     }
 
     .dark .product-background {
-        background-image: linear-gradient(
-            to bottom,
-            var(--color-black-800) 52%,
-            var(--color-vivid-pink-800) 100%
-        );
+        background-image: linear-gradient(to bottom,
+                var(--color-black-800) 52%,
+                var(--color-vivid-pink-800) 100%);
         background-repeat: no-repeat;
     }
 
@@ -181,24 +201,14 @@ html {
         0% {
             background-position: 0% 50%;
         }
+
         50% {
             background-position: 100% 50%;
         }
+
         100% {
             background-position: 0% 50%;
         }
-    }
-
-    .wallet-connection {
-        @apply bg-white-500 w-[56.1875rem] h-[37.4375rem] rounded-2xl dark:bg-black-800;
-    }
-
-    .wallet-terms {
-        @apply text-vivid-pink-500 underline underline-offset-2;
-    }
-
-    .wallet-option {
-        @apply flex justify-start items-center w-[52.1875rem] h-[6.5625rem] rounded-2xl border-[0.09375rem] border-white-600 bg-white-400 dark:bg-black-800;
     }
 
     .wallet-modal-overlay {
@@ -214,91 +224,145 @@ html {
         align-items: center;
         z-index: 1000;
         animation: fadeIn 0.2s ease-out;
+        padding: 1.25rem;
+        /* allow some inset on small screens */
     }
 
     .wallet-modal-container {
         position: relative;
         animation: slideUp 0.3s ease-out;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
+    .wallet-connection {
+        /* responsive sizing: full width up to the original design width, max height constrained for small viewports */
+        @apply bg-white-500 rounded-2xl dark:bg-black-800 w-full max-w-[56.1875rem] max-h-[90vh] overflow-y-auto;
+        @apply p-6;
+        /* padding inside the modal */
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    /* smaller padding and slightly less rounded corners on very small screens */
+    @media (max-width: 480px) {
+        .wallet-connection {
+            @apply p-4 rounded-lg;
         }
     }
 
-    @keyframes slideUp {
-        from {
-            opacity: 0;
-            transform: translateY(1.25rem);
+    .wallet-option {
+        /* allow each option to fill modal width but keep a max width so layout matches design on large screens */
+        @apply flex justify-start items-center w-full max-w-[52.1875rem] h-[6.5625rem] rounded-2xl border-[0.09375rem] border-white-600 bg-white-400 dark:bg-black-800;
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+    }
+
+    @media (max-width: 480px) {
+        .wallet-option {
+            height: auto;
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+            gap: 1rem;
         }
-        to {
-            opacity: 1;
-            transform: translateY(0);
+
+        .wallet-option img {
+            width: 64px;
+            height: 64px;
         }
+    }
+
+    .wallet-terms {
+        @apply text-vivid-pink-500 underline underline-offset-2;
     }
 
     .footer {
         @apply flex justify-between px-10 pb-24 pt-30;
     }
-    
+
     .footer-item {
         @apply flex flex-col items-start gap-[1.5rem];
     }
 
     @keyframes slide {
-        0%, 12% {
+
+        0%,
+        12% {
             transform: translateY(0);
         }
-        14%, 26% {
-            transform: translateY(calc(-1 * var(--image-height, 29rem)));
+
+        14%,
+        26% {
+            transform: translateY(calc(var(--image-height, 29rem) * -1));
         }
-        28%, 40% {
-            transform: translateY(calc(-2 * var(--image-height, 29rem)));
+
+        28%,
+        40% {
+            transform: translateY(calc(var(--image-height, 29rem) * -2));
         }
-        42%, 54% {
-            transform: translateY(calc(-3 * var(--image-height, 29rem)));
+
+        42%,
+        54% {
+            transform: translateY(calc(var(--image-height, 29rem) * -3));
         }
-        56%, 68% {
-            transform: translateY(calc(-4 * var(--image-height, 29rem)));
+
+        56%,
+        68% {
+            transform: translateY(calc(var(--image-height, 29rem) * -4));
         }
-        70%, 82% {
-            transform: translateY(calc(-5 * var(--image-height, 29rem)));
+
+        70%,
+        82% {
+            transform: translateY(calc(var(--image-height, 29rem) * -5));
         }
-        84%, 96% {
-            transform: translateY(calc(-6 * var(--image-height, 29rem)));
+
+        84%,
+        96% {
+            transform: translateY(calc(var(--image-height, 29rem) * -6));
         }
-        98%, 100% {
-            transform: translateY(calc(-7 * var(--image-height, 29rem)));
+
+        98%,
+        100% {
+            transform: translateY(calc(var(--image-height, 29rem) * -7));
         }
     }
 
     .animate-slide {
-        animation: slide 28s ease-in-out infinite;
+        animation: slide 18s ease-in-out infinite;
     }
 
     @keyframes nft-bg {
-        0%, 49% { opacity: 0; }
-      
+
+        0%,
+        40% {
+            opacity: 0;
+        }
+
         /* Fade in */
-        54% { opacity: 1; }
-      
+        42% {
+            opacity: 1;
+        }
+
         /* Hold visibility */
-        56%, 58% { opacity: 1; }
-      
+        48%,
+        50% {
+            opacity: 1;
+        }
+
         /* Extended fade-out */
-        70%, 90% { opacity: 0; }
+        62%,
+        90% {
+            opacity: 0;
+        }
     }
-      
+
     .animate-nft-bg {
-        animation: nft-bg 28s ease-in-out infinite;
+        animation: nft-bg 18s ease-in-out infinite;
         animation-fill-mode: both;
         will-change: opacity;
     }
-    
+
     .clip-left {
         clip-path: polygon(0 0, 100% 0, 0 100%);
     }
@@ -351,5 +415,47 @@ html {
   
     .underline-hover:hover::after {
       transform: scaleX(1);
+    }
+    
+    /* Theme toggle icon animation */
+    .theme-toggle {
+        display: inline-block;
+        width: 2.3125rem;
+        /* matches icon sizing used across the navbar */
+        height: 2.3125rem;
+        position: relative;
+        vertical-align: middle;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    .theme-toggle svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        transition: transform .24s cubic-bezier(.2, .8, .2, 1), opacity .24s cubic-bezier(.2, .8, .2, 1);
+        will-change: transform, opacity;
+        pointer-events: none;
+    }
+
+    /* visible / hidden states */
+    .theme-toggle .icon-show {
+        opacity: 1;
+        transform: rotate(0deg) scale(1);
+        pointer-events: auto;
+    }
+
+    .theme-toggle .icon-hide {
+        opacity: 0;
+        transform: rotate(-12deg) scale(0.88);
+        pointer-events: none;
+    }
+
+    /* Respect reduced motion preference */
+    @media (prefers-reduced-motion: reduce) {
+        .theme-toggle svg {
+            transition: none;
+        }
     }
 }

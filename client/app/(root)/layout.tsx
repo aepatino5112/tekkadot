@@ -3,6 +3,7 @@ import { Montserrat } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import FooterProducts from "@/components/FooterProducts";
 import "../globals.css";
+import Footer from "@/components/Footer";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -23,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${montserrat.variable} flex flex-col product-background dark:product-background-dark min-h-screen overflow-x-hidden`}
+        className={`${montserrat.variable} flex flex-col product-background dark:product-background-dark w-screen overflow-x-hidden min-h-screen`}
       >
         <script
           dangerouslySetInnerHTML={{
@@ -41,11 +42,9 @@ export default function RootLayout({
             `,
           }}
         />
-        <Navbar />
-        <main className="grow">
-          {children}
-        </main>
-        <FooterProducts />
+        <Navbar variant="nfts"/>
+        <main className="grow">{children}</main>
+        <Footer variant="nfts" />
       </body>
     </html>
   );
