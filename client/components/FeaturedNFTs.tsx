@@ -6,10 +6,17 @@ import { MoveUpRight } from 'lucide-react';
 const FeaturedNFTs = ({ nfts }: FeaturedNFTsProps) => {
   return (
     <section className="flex flex-col justify-start mb-12 gap-8">
-      <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-black-500 dark:text-white-500">
-        Featured NFTs
-      </h2>
+      <div className="flex justify-between">
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-black-500 dark:text-white-500">
+          Featured NFTs
+        </h2>
 
+        <Link href="/nfts" className="flex items-center gap-1.5">
+            <p className="text-xl sm:text-2xl md:text-3xl font-medium text-lime-green-600 dark:text-lime-green-400 underline-hover">All NFTs</p>
+            <MoveUpRight className="w-[1.4rem] h-[1.5rem] text-lime-green-600 dark:text-lime-green-400" />
+        </Link>
+      </div>
+      
       {/* Responsive grid:
           - mobile: 1 column (big cards)
           - sm: 2 columns

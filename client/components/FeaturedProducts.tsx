@@ -6,10 +6,16 @@ import { MoveUpRight } from 'lucide-react';
 const FeaturedProducts = ({ products }: FeaturedProductsProps) => {
   return (
     <section className="flex flex-col justify-start mt-24 mb-16 gap-6">
-      <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-black-500 dark:text-white-500">
-        Featured Products
-      </h2>
-
+      <div className="flex justify-between">
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-black-500 dark:text-white-500">
+          Featured Products
+        </h2>
+        <Link href="/products" className="flex items-center gap-1.5">
+            <p className="text-xl sm:text-2xl md:text-3xl font-medium text-vivid-pink-600 dark:text-vivid-pink-400 underline-hover">All Products</p>
+            <MoveUpRight className="w-[1.4rem] h-[1.5rem] text-vivid-pink-600 dark:text-vivid-pink-400" />
+        </Link>
+      </div>
+      
       {/* Responsive grid:
           - mobile: 1 column
           - sm: 2 columns
