@@ -3,7 +3,7 @@ import { type FeaturedProductsProps } from "@/types/cards";
 
 const FeaturedProducts = ({ products }: FeaturedProductsProps) => {
   return (
-    <section className="flex flex-col justify-start mt-18 mb-16 gap-6">
+    <section className="flex flex-col justify-start mt-24 mb-16 gap-6">
       <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-black-500 dark:text-white-500">
         Featured Products
       </h2>

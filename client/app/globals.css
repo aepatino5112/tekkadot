@@ -294,37 +294,37 @@ iframe {
 
         14%,
         26% {
-            transform: translateY(calc(-1 * var(--image-height, 29rem)));
+            transform: translateY(calc(var(--image-height, 29rem) * -1));
         }
 
         28%,
         40% {
-            transform: translateY(calc(-2 * var(--image-height, 29rem)));
+            transform: translateY(calc(var(--image-height, 29rem) * -2));
         }
 
         42%,
         54% {
-            transform: translateY(calc(-3 * var(--image-height, 29rem)));
+            transform: translateY(calc(var(--image-height, 29rem) * -3));
         }
 
         56%,
         68% {
-            transform: translateY(calc(-4 * var(--image-height, 29rem)));
+            transform: translateY(calc(var(--image-height, 29rem) * -4));
         }
 
         70%,
         82% {
-            transform: translateY(calc(-5 * var(--image-height, 29rem)));
+            transform: translateY(calc(var(--image-height, 29rem) * -5));
         }
 
         84%,
         96% {
-            transform: translateY(calc(-6 * var(--image-height, 29rem)));
+            transform: translateY(calc(var(--image-height, 29rem) * -6));
         }
 
         98%,
         100% {
-            transform: translateY(calc(-7 * var(--image-height, 29rem)));
+            transform: translateY(calc(var(--image-height, 29rem) * -7));
         }
     }
 
