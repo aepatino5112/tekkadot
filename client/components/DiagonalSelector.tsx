@@ -26,7 +26,7 @@ const DiagonalSelector = () => {
         <h2
           className="absolute text-white-500 font-black drop-shadow-lg drop-shadow-custom"
           style={{
-            top: "clamp(8rem, 12vh, 16rem)",
+            top: "clamp(4rem, 6vh, 8rem)",
             left: "clamp(1rem, 5vw, 5rem)",
             fontSize: "clamp(2.8rem, 9vw, 10rem)",
             letterSpacing: "0.04em",
@@ -38,7 +38,7 @@ const DiagonalSelector = () => {
         <h2
           className="absolute text-white-500 font-black drop-shadow-lg drop-shadow-custom"
           style={{
-            bottom: "clamp(8rem, 12vh, 16rem)",
+            bottom: "clamp(4rem, 6vh, 8rem)",
             right: "clamp(1rem, 5vw, 5rem)",
             fontSize: "clamp(2.8rem, 9vw, 10rem)",
             letterSpacing: "0.04em",
