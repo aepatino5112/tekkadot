@@ -33,7 +33,7 @@ const imageList: HeroImages[] = [
 
 const AnimatedViewport = () => {
   // responsive height: min/max with viewport fallback
-  const cssImageHeight = "clamp(40rem, 45vh, 64rem)";
+  const cssImageHeight = "clamp(42rem, 56vh, 72rem)";
 
   return (
     <div
