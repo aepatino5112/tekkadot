@@ -50,3 +50,8 @@ export type FeaturedProductsProps = {
 export type FeaturedNFTsProps = {
     nfts: NFTProps[]
 }
+
+// Type for Collection Card Props
+export type CollectionCardProps = {
+    name: string
+}
