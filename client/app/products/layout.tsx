@@ -3,20 +3,20 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "TekkaDot - The Decentralized Marketplace for Tech & NFTs",
+  title: "TekkaDot - Products",
   description: "TekkaDot is a Web3-powered e-commerce platform offering the latest in laptops, gaming consoles, wearables, smartphones, and exclusive NFTs. Experience secure blockchain transactions, wallet-based access, and true digital ownership—all in one futuristic marketplace. Shop cutting-edge tech and collect verified digital assets with confidence."
 };
 
-export default function LandingLayout({
+export default function ProductsLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-      <section>
+    <section>
         <Navbar />
             <main className="grow">{children}</main>
         <Footer />
-      </section>
+    </section>
   );
 }
