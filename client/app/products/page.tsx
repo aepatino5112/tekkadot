@@ -1,12 +1,7 @@
-import Collections from "@/components/Collections";
+import { redirect } from "next/navigation";
 
-const Products = () => {
-
-    return (
-        <div className="flex flex-col w-full mx-10 min-w-0 overflow-x-hidden">
-            <Collections />
-        </div>
-    );
+const ProductsRoot = () => {
+    redirect('/products/1');
 };
 
-export default Products;
+export default ProductsRoot;

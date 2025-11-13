@@ -4,7 +4,7 @@ import Image from "next/image";
 const CollectionCard = ({ name }: CollectionCardProps) => {
 
     return (
-        <div className="relative aspect-video w-full cursor-pointer lg:max-w-lg">
+        <div className="relative aspect-video w-full cursor-pointer max-w-sm lg:max-w-106">
             <Image 
                 src={`/collections/${name}.svg`}
                 alt={`${name} image`}
