@@ -14,9 +14,9 @@ export default function ProductsLayout({
 }>) {
   return (
     <section>
-        <Navbar />
+        <Navbar variant="products" />
             <main className="grow">{children}</main>
-        <Footer />
+        <Footer variant="products" />
     </section>
   );
 }

@@ -60,3 +60,8 @@ export type CollectionCardProps = {
 export type ProductsProps = {
     products: ProductProps[]
 }
+
+// Type for NFTs Props
+export type NFTsProps = {
+    nfts: NFTProps[]
+}
