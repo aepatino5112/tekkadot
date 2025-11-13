@@ -6,6 +6,7 @@ import GradientText from "./GradientText";
 import ConnectBtn from "./ConnectBtn";
 import Wallets from "./Wallets";
 import { useEffect, useState, useLayoutEffect, startTransition } from "react";
+import { usePathname } from "next/navigation";
 
 type Variant = "default" | "products" | "nfts";
 
@@ -30,6 +31,7 @@ const Navbar = ({
   const [mounted, setMounted] = useState<boolean>(false);
   const [isWalletModalOpen, setIsWalletModalOpen] = useState<boolean>(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const pathname = usePathname();
 
   // Read theme from DOM (set by script tag) after mount to sync state
   useLayoutEffect(() => {
@@ -140,7 +142,8 @@ const Navbar = ({
 
         <div className="links hidden md:flex gap-6 items-center text-sm md:text-base lg:text-lg">
           <Link href="/">
-            <GradientText
+            {pathname === '/' ? (
+              <GradientText
               colors={["#ff2670", "#87de3c", "#ff2670", "#87de3c"]}
               animationSpeed={6}
               showBorder={false}
@@ -148,10 +151,13 @@ const Navbar = ({
             >
               Home
             </GradientText>
+            ) : (
+              <p>Home</p>
+            )}
           </Link>
-          <Link href="/products">Products</Link>
-          <Link href="/nfts">NFTs</Link>
-          <Link href="/about-us">About Us</Link>
+          <Link href="/products" className={pathname.startsWith('/products') ? 'text-vivid-pink-500' : ''}>Products</Link>
+          <Link href="/nfts" className={pathname.startsWith('/nfts') ? 'text-lime-green-500' : ''}>NFTs</Link>
+          <Link href="/about-us" className={pathname === '/about-us' ? 'text-vivid-pink-500' : ''}>About Us</Link>
         </div>
 
         <div className="connect-btn flex items-center gap-3">
