@@ -12,11 +12,14 @@ export default function NFTsLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Apply the nft background at the route layout level so the entire NFTs
+  // page uses the `nft-background` defined in globals.css without changing
+  // any global/background styles or dark-mode logic.
   return (
-    <section>
-        <Navbar variant="nfts" />
-            <main className="grow">{children}</main>
-        <Footer variant="nfts" />
+    <section className="nft-background min-h-screen flex flex-col">
+      <Navbar variant="nfts" />
+      <main className="grow">{children}</main>
+      <Footer variant="nfts" />
     </section>
   );
 }
