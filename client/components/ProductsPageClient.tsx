@@ -7,7 +7,7 @@ import Pagination from "@/components/Pagination";
 import FilterButton from "@/components/FilterButton";
 import { type ProductProps } from "@/types/cards";
 
-const PAGE_SIZE = 16;
+const PAGE_SIZE = 15;
 
 interface Props {
   products: ProductProps[];
