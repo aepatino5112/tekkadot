@@ -6,9 +6,10 @@ interface PaginationProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  variant?: 'nft' | 'product';
 }
 
-const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) => {
+const Pagination = ({ currentPage, totalPages, onPageChange, variant }: PaginationProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -66,8 +67,8 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) 
               onClick={() => handlePageChange(page)}
               className={`w-9 h-9 flex items-center justify-center rounded-full text-lg font-medium transition-colors ${
                 currentPage === page
-                  ? 'bg-vivid-pink-500 text-white-500' // pink active
-                  : 'text-black-500 dark:text-white-500 hover:bg-gray-100 dark:hover:text-black-500'
+                        ? `${variant === 'nft' ? 'bg-lime-green-500' : 'bg-vivid-pink-500'} text-white-500` // variant switch
+                        : 'text-black-500 dark:text-white-500 hover:bg-gray-100 dark:hover:text-black-500'
               }`}
             >
               {page}

@@ -63,6 +63,7 @@ export default function NFTsPageClient({ nfts }: Props) {
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={(p) => setCurrentPage(p)}
+        variant="nft"
       />
     </div>
   );
