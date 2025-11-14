@@ -49,12 +49,12 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) 
 
   return (
     <div className="flex justify-center my-8">
-      <nav className="inline-flex items-center gap-3 rounded-full border-2 border-[#2b1b22] px-3 py-2">
+      <nav className="inline-flex items-center gap-3 rounded-full border-2 border-black-500 dark:border-white-500 px-3 py-2">
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
           aria-label="Previous page"
-          className={`rounded-full p-2 ${currentPage === 1 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-700 hover:bg-gray-100'}`}
+          className={`rounded-full p-2 ${currentPage === 1 ? 'text-black-400 dark:text-white-400 cursor-not-allowed' : 'text-gray-700 dark:text-white-700 hover:bg-gray-100'}`}
         >
           <ChevronLeft size={18} />
         </button>
@@ -66,14 +66,14 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) 
               onClick={() => handlePageChange(page)}
               className={`w-9 h-9 flex items-center justify-center rounded-full text-lg font-medium transition-colors ${
                 currentPage === page
-                  ? 'bg-[#ff3b78] text-white' // pink active
-                  : 'text-gray-800 hover:bg-gray-100'
+                  ? 'bg-vivid-pink-500 text-white-500' // pink active
+                  : 'text-black-500 dark:text-white-500 hover:bg-gray-100 dark:hover:text-black-500'
               }`}
             >
               {page}
             </button>
           ) : (
-            <span key={`el-${idx}`} className="text-gray-500 text-lg px-2">{page}</span>
+            <span key={`el-${idx}`} className="text-black-500 dark:text-white-500 text-lg px-2">{page}</span>
           )
         ))}
 
@@ -81,7 +81,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) 
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
           aria-label="Next page"
-          className={`rounded-full p-2 ${currentPage === totalPages ? 'text-gray-300 cursor-not-allowed' : 'text-gray-700 hover:bg-gray-100'}`}
+          className={`rounded-full p-2 ${currentPage === totalPages ? 'text-black-400 dark:text-white-400 cursor-not-allowed' : 'text-gray-700 dark:text-white-700 hover:bg-gray-100'}`}
         >
           <ChevronRight size={18} />
         </button>

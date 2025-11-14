@@ -2,18 +2,18 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from 'next/navigation';
-import ProductsList from "@/components/ProductsList";
+import NFTsList from "@/components/NFTsList";
 import Pagination from "@/components/Pagination";
 import FilterButton from "@/components/FilterButton";
-import { type ProductProps } from "@/types/cards";
+import { type NFTProps } from "@/types/cards";
 
 const PAGE_SIZE = 16;
 
 interface Props {
-  products: ProductProps[];
+  nfts: NFTProps[];
 }
 
-export default function ProductsPageClient({ products }: Props) {
+export default function NFTsPageClient({ nfts }: Props) {
   const searchParams = useSearchParams();
   const initialPage = parseInt(searchParams?.get('page') ?? '1', 10) || 1;
 
@@ -26,10 +26,9 @@ export default function ProductsPageClient({ products }: Props) {
   }, [searchParams?.toString()]);
 
   const sortParam = (searchParams?.get('sort')) ?? '';
-  const collectionParam = (searchParams?.get('collection')) ?? '';
 
-  const sortedProducts = useMemo(() => {
-    const copy = [...products];
+  const sorted = useMemo(() => {
+    const copy = [...nfts];
     switch (sortParam) {
       case 'h-price':
         return copy.sort((a, b) => b.price - a.price);
@@ -42,19 +41,14 @@ export default function ProductsPageClient({ products }: Props) {
       default:
         return copy;
     }
-  }, [products, sortParam]);
+  }, [nfts, sortParam]);
 
-  const filteredProducts = useMemo(() => {
-    if (!collectionParam) return sortedProducts;
-    return sortedProducts.filter((p) => (p as any).collection === collectionParam);
-  }, [sortedProducts, collectionParam]);
+  const totalPages = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
 
-  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE));
-
-  const visibleProducts = useMemo(() => {
+  const visible = useMemo(() => {
     const start = (currentPage - 1) * PAGE_SIZE;
-    return filteredProducts.slice(start, start + PAGE_SIZE);
-  }, [currentPage, filteredProducts]);
+    return sorted.slice(start, start + PAGE_SIZE);
+  }, [currentPage, sorted]);
 
   return (
     <div>
@@ -63,7 +57,7 @@ export default function ProductsPageClient({ products }: Props) {
         <FilterButton />
       </div>
 
-      <ProductsList products={visibleProducts} />
+      <NFTsList nfts={visible} />
 
       <Pagination
         currentPage={currentPage}
