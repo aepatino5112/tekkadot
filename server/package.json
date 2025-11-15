@@ -9,7 +9,7 @@
     "dev": "tsx --watch src/index.ts"
   },
   "keywords": [],
-  "author": "",
+  "author": "aepatino5112 & SebastianGomes03",
   "license": "ISC",
   "packageManager": "pnpm@10.15.0",
   "dependencies": {
