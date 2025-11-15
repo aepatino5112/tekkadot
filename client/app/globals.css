@@ -145,6 +145,12 @@ iframe {
                 var(--color-white-500) 64%,
                 var(--color-lime-green-200) 100%);
         background-repeat: no-repeat;
+        /* Anchor the gradient to the viewport so its bottom lines up with the
+           bottom of the screen (not the bottom of the page content). This
+           makes the background "follow" the screen as you requested. */
+        background-attachment: fixed;
+        background-position: center bottom;
+        background-size: cover;
     }
 
     .dark .nft-background {
@@ -152,6 +158,9 @@ iframe {
                 var(--color-black-800) 68%,
                 var(--color-lime-green-700) 100%);
         background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center bottom;
+        background-size: cover;
     }
 
     .product-background {
@@ -159,6 +168,11 @@ iframe {
                 var(--color-white-500) 64%,
                 var(--color-vivid-pink-200) 100%);
         background-repeat: no-repeat;
+        /* Anchor to viewport so product pages also have the background
+           bottom aligned to the screen, not the document. */
+        background-attachment: fixed;
+        background-position: center bottom;
+        background-size: cover;
     }
 
     .dark .product-background {
@@ -166,6 +180,9 @@ iframe {
                 var(--color-black-800) 52%,
                 var(--color-vivid-pink-800) 100%);
         background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center bottom;
+        background-size: cover;
     }
 
     .navbar {

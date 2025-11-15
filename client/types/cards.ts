@@ -28,6 +28,7 @@ export type ProductProps = {
     price: number,
     trustIndex: number,
     imageUrl: string;
+    collection?: string;
 }
 
 // Type for props in NFTs Cards
@@ -48,5 +49,20 @@ export type FeaturedProductsProps = {
 
 // Type for featured NFTs props
 export type FeaturedNFTsProps = {
+    nfts: NFTProps[]
+}
+
+// Type for Collection Card Props
+export type CollectionCardProps = {
+    name: string
+}
+
+// Type for Products Props
+export type ProductsProps = {
+    products: ProductProps[]
+}
+
+// Type for NFTs Props
+export type NFTsProps = {
     nfts: NFTProps[]
 }
