@@ -27,7 +27,7 @@ app.get('/', (_: Request, res: Response) => {
 // Server Health Checkpoint
 app.get('/api/health', (_: Request, res: Response) => {
     res.status(200).json({ status: 'ok' });
-    logger.info({ status: 'ok' });
+    logger.info('Server is online');
 });
 
 // Server listens
