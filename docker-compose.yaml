@@ -32,5 +32,31 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
 
+  server:
+    depends_on:
+      - db
+    build: ./server
+    env_file:
+      - ./server/.env
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./server/src/logs:/app/src/logs
+    develop:
+      watch:
+        - path: ./server/src
+          target: /app/src
+          action: sync
+          ignore:
+            - node_modules/
+            - .git/
+            - logs/
+        - path: ./server/package.json
+          action: rebuild
+        - path: ./server/pnpm-lock.yaml
+          action: rebuild
+        - path: ./server/Dockerfile
+          action: rebuild
+
 volumes:
   db_data:
