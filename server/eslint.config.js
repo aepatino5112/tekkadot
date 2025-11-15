@@ -29,7 +29,7 @@ export default [
     },
     rules: {
       ...typescriptPlugin.configs.recommended.rules,
-      indent: ['error', 'tab', { SwitchCase: 1 }],
+      indent: ['error', 4, { SwitchCase: 1 }],
       'linebreak-style': 'off',
       quotes: ['error', 'single'],
       semi: ['error', 'always'],
