@@ -1,12 +1,22 @@
+import { useEffect } from "react";
 import Link from "next/link";
-import { Wallet, X } from 'lucide-react';
+import { Wallet, X } from "lucide-react";
 import WalletOption from "./WalletOption";
 
 interface WalletsProps {
-    onClose: () => void;
+  onClose: () => void;
 }
 
 const Wallets = ({ onClose }: WalletsProps) => {
+  useEffect(() => {
+    // Add overflow-hidden to the <html> element to prevent scrolling
+    document.documentElement.classList.add("overflow-hidden");
+
+    return () => {
+      // Remove overflow-hidden when the modal is closed
+      document.documentElement.classList.remove("overflow-hidden");
+    };
+  }, []);
 
     return (
         <div className="wallet-modal-overlay" role="dialog" aria-modal="true" onClick={onClose}>
@@ -46,4 +56,4 @@ const Wallets = ({ onClose }: WalletsProps) => {
     );
 };
 
- export default Wallets;
+export default Wallets;

@@ -24,7 +24,7 @@ const AssetItem: React.FC<AssetItemProps> = ({
     <div
       className={`${
         isNFT
-          ? "w-[11rem] h-[11rem] rounded-xl overflow-hidden" // Rounded but not circular
+          ? "cursor-pointer w-[11rem] h-[11rem] rounded-xl overflow-hidden" // Rounded but not circular
           : "flex items-center gap-4 p-4 rounded-lg"
       } ${
         isNFT
@@ -60,7 +60,7 @@ const AssetItem: React.FC<AssetItemProps> = ({
       {!isNFT && (
         <button
           onClick={onView}
-          className="text-lg font-medium text-vivid-pink-500 hover:underline transition-all"
+          className="cursor-pointer text-lg font-medium text-vivid-pink-500 hover:underline transition-all"
         >
           View
         </button>
