@@ -7,7 +7,7 @@ import Pagination from "@/components/Pagination";
 import FilterButton from "@/components/FilterButton";
 import { type NFTProps } from "@/types/cards";
 
-const PAGE_SIZE = 15;
+const PAGE_SIZE = 16;
 
 interface Props {
   nfts: NFTProps[];
