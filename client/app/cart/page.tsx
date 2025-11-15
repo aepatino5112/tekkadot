@@ -118,12 +118,6 @@ const Cart = () => {
                     {networkFee.toFixed(2)} DOT
                   </span>
                 </div>
-                <div className="flex justify-between text-black-500 dark:text-white-500">
-                  <span>Loyalty Tokens</span>
-                  <span className="font-semibold">
-                    {loyaltyDiscount.toFixed(2)} DOT
-                  </span>
-                </div>
                 <div className="terms-divider my-2" />
                 <div className="flex justify-between text-lg font-semibold">
                   <span className="text-black-500 dark:text-white-500">
@@ -148,30 +142,6 @@ const Cart = () => {
                   onClick={() => router.push("/products")}
                 >
                   Continue Shopping
-                </Button>
-              </div>
-            </div>
-
-            {/* Loyalty Tokens */}
-            <div className="p-6 rounded-lg border border-white-600 dark:border-black-400">
-              <h5 className="font-medium text-black-500 dark:text-white-500 flex items-center gap-2">
-                Loyalty Tokens
-              </h5>
-              <div className="flex flex-col items-center my-4">
-                <p className="text-4xl font-semibold text-vivid-pink-500">
-                  450
-                </p>
-                <p className="text-md text-black-500 dark:text-white-500">
-                  Available Tokens
-                </p>
-              </div>
-              <div className="flex justify-center mt-6">
-                <Button
-                  variant="secondary"
-                  type="product"
-                  onClick={() => console.log("Apply Loyalty Tokens")}
-                >
-                  Apply Tokens (-0.3 DOT)
                 </Button>
               </div>
             </div>
