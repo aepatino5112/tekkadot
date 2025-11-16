@@ -7,14 +7,15 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "node dist/index.js",
+        "build": "tsc",
         "dev": "tsx --watch src/index.ts",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
-        "db:generate": "drizzle-kit generate --config=src/config/drizzle.config.ts",
+        "db:generate": "pnpm run build && drizzle-kit generate --config=src/config/drizzle.config.ts",
         "db:migrate": "tsx src/drizzle/migrate.ts",
-        "db:drop": "drizzle-kit drop"
+        "db:drop": "drizzle-kit drop --config=src/config/drizzle.config.ts"
     },
     "keywords": [],
     "author": "aepatino5112 & SebastianGomes03",

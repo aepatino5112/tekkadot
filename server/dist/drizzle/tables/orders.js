@@ -3,8 +3,6 @@ import { UsersTable } from './users.js';
 import { WalletsTable } from './wallets.js';
 import { CartsTable } from './carts.js';
 import { sql } from 'drizzle-orm';
-
-
 export const OrdersTable = pgTable('orders', {
     order_id: uuid('order_id').defaultRandom().primaryKey(),
     tx_hash: varchar('tx_hash', { length: 128 }).notNull(),
@@ -16,6 +14,7 @@ export const OrdersTable = pgTable('orders', {
     cart_id: uuid('cart_id').references(() => CartsTable.cart_id).notNull()
 }, table => {
     return {
-        total_check: check('total_check', sql`${table.total} > 0`)
+        total_check: check('total_check', sql `${table.total} > 0`)
     };
 });
+//# sourceMappingURL=orders.js.map

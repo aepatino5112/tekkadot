@@ -4,4 +4,5 @@ logs/
 drizzle/
 *.log
 pnpm-lock.json
+pnpm-lock.yaml
 package-lock.json
