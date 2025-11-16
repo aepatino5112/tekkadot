@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { WalletProvider } from "@/context/WalletContext";
 
 export const metadata: Metadata = {
   title: "TekkaDot - The Decentralized Marketplace for Tech & NFTs",
@@ -13,10 +14,12 @@ export default function LandingLayout({
   children: React.ReactNode;
 }>) {
   return (
-      <section>
-        <Navbar />
+      <WalletProvider>
+        <section>
+          <Navbar />
             <main className="grow">{children}</main>
-        <Footer />
-      </section>
+          <Footer />
+        </section>
+      </WalletProvider>
   );
 }

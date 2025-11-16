@@ -7,6 +7,7 @@ import ConnectBtn from "./ConnectBtn";
 import Wallets from "./Wallets";
 import { useEffect, useState, useLayoutEffect, startTransition } from "react";
 import { usePathname } from "next/navigation";
+import { useWalletContext } from "@/context/WalletContext";
 
 type Variant = "default" | "products" | "nfts";
 
@@ -120,6 +121,8 @@ const Navbar = ({
     color: brandColor ?? brands[variant].color,
   };
 
+  const { user, connect, disconnect, loading, error } = useWalletContext();
+
   return (
     <header>
       <nav className="navbar flex items-center justify-between px-4 py-3 md:px-8">
@@ -198,7 +201,21 @@ const Navbar = ({
 
           {showConnect && (
             <div className="hidden md:block">
-              <ConnectBtn onClick={() => setIsWalletModalOpen(true)} />
+              {user ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-black-500 dark:text-white-500">
+                    {user.wallet_address.slice(0, 6)}...{user.wallet_address.slice(-4)}
+                  </span>
+                  <button
+                    onClick={disconnect}
+                    className="text-xs px-2 py-1 border rounded border-gray-400 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  >
+                    Disconnect
+                  </button>
+                </div>
+              ) : (
+                <ConnectBtn onClick={() => setIsWalletModalOpen(true)} />
+              )}
             </div>
           )}
 
