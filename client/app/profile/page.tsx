@@ -8,7 +8,16 @@ import Button from "@/components/Button";
 import ListingCard from "@/components/ListingCard";
 import CreateListingForm from "@/components/CreateListingForm";
 import ConfirmationModal from "@/components/ConfirmationModal";
+import DetailsModal from "@/components/DetailsModal"; // Import DetailsModal
 import React, { useEffect, useState } from "react";
+import ChatCard from "@/components/ChatCard";
+import ChatWindow from "@/components/ChatWindow";
+
+type Message = {
+  sender: "me" | "other"; // The sender can either be "me" or "other"
+  content: string; // The content of the message
+  timestamp: string; // The timestamp of the message
+};
 
 type ListingType = {
   id: string;
@@ -26,7 +35,12 @@ type AssetItemType = {
   purchaseDate: string;
   imageUrl: string;
   type: "product" | "nft";
-  onView: () => void;
+  details: {
+    category: string;
+    rarity?: string; // Optional for NFTs
+    originalSeller: string;
+  };
+  price: number | string; // Add price for compatibility with DetailsModal
 };
 
 const techProducts: AssetItemType[] = [
@@ -36,23 +50,11 @@ const techProducts: AssetItemType[] = [
     purchaseDate: "October 31, 2025",
     imageUrl: "/images/product1.jpg",
     type: "product",
-    onView: () => console.log("Viewing product 1"),
-  },
-  {
-    id: "2",
-    name: "Samsung Galaxy S25",
-    purchaseDate: "October 31, 2025",
-    imageUrl: "/images/product1.jpg",
-    type: "product",
-    onView: () => console.log("Viewing product 2"),
-  },
-  {
-    id: "3",
-    name: "Samsung Galaxy S25",
-    purchaseDate: "October 31, 2025",
-    imageUrl: "/images/product1.jpg",
-    type: "product",
-    onView: () => console.log("Viewing product 3"),
+    price: 999,
+    details: {
+      category: "Smartphone",
+      originalSeller: "Samsung",
+    },
   },
 ];
 
@@ -63,39 +65,12 @@ const nfts: AssetItemType[] = [
     purchaseDate: "November 1, 2025",
     imageUrl: "/images/nft1.jpg",
     type: "nft",
-    onView: () => console.log("Viewing NFT 1"),
-  },
-  {
-    id: "2",
-    name: "Rare Crypto Art",
-    purchaseDate: "November 1, 2025",
-    imageUrl: "/images/nft1.jpg",
-    type: "nft",
-    onView: () => console.log("Viewing NFT 2"),
-  },
-  {
-    id: "3",
-    name: "Rare Crypto Art",
-    purchaseDate: "November 1, 2025",
-    imageUrl: "/images/nft1.jpg",
-    type: "nft",
-    onView: () => console.log("Viewing NFT 3"),
-  },
-  {
-    id: "4",
-    name: "Rare Crypto Art",
-    purchaseDate: "November 1, 2025",
-    imageUrl: "/images/nft1.jpg",
-    type: "nft",
-    onView: () => console.log("Viewing NFT 4"),
-  },
-  {
-    id: "5",
-    name: "Rare Crypto Art",
-    purchaseDate: "November 1, 2025",
-    imageUrl: "/images/nft1.jpg",
-    type: "nft",
-    onView: () => console.log("Viewing NFT 5"),
+    price: 0,
+    details: {
+      category: "Digital Art",
+      rarity: "Rare",
+      originalSeller: "CryptoArtist",
+    },
   },
 ];
 
@@ -150,6 +125,23 @@ const Profile = () => {
   const [selectedListing, setSelectedListing] = useState<ListingType | null>(
     null
   );
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [selectedAsset, setSelectedAsset] = useState<AssetItemType | null>(
+    null
+  );
+  const [activeChatId, setActiveChatId] = useState<string | null>(null);
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      sender: "other",
+      content: "Hello! Interested in the MacBook?",
+      timestamp: "10:30 AM",
+    },
+    {
+      sender: "me",
+      content: "Yes! Is it still available?",
+      timestamp: "10:30 AM",
+    },
+  ]);
 
   const handleCreateModalToggle = () => {
     setIsCreateModalOpen(!isCreateModalOpen);
@@ -168,6 +160,26 @@ const Profile = () => {
       setSelectedListing(null);
       setIsConfirmationModalOpen(false);
     }
+  };
+
+  const handleAssetView = (asset: AssetItemType) => {
+    setSelectedAsset(asset);
+    setIsDetailsModalOpen(true);
+  };
+
+  const handleOpenChat = (chatId: string) => {
+    setActiveChatId(chatId);
+  };
+
+  const handleSendMessage = (message: string) => {
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      {
+        sender: "me",
+        content: message,
+        timestamp: new Date().toLocaleTimeString(),
+      },
+    ]);
   };
 
   useEffect(() => {
@@ -236,7 +248,11 @@ const Profile = () => {
               </p>
               <div className="flex flex-col gap-4">
                 {techProducts.map((product) => (
-                  <AssetItem key={product.id} {...product} />
+                  <AssetItem
+                    key={product.id}
+                    {...product}
+                    onView={() => handleAssetView(product)}
+                  />
                 ))}
               </div>
             </div>
@@ -253,7 +269,11 @@ const Profile = () => {
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {nfts.map((nft) => (
-                  <AssetItem key={nft.id} {...nft} />
+                  <AssetItem
+                    key={nft.id}
+                    {...nft}
+                    onView={() => handleAssetView(nft)}
+                  />
                 ))}
               </div>
             </div>
@@ -298,6 +318,31 @@ const Profile = () => {
         </div>
       )}
 
+      {activeSection === "Messages" && (
+        <div className="max-w-312 w-full mx-auto flex flex-col gap-4 pt-6 pb-10">
+          {!activeChatId ? (
+            techProducts.map((product) => (
+              <ChatCard
+                key={product.id}
+                id={product.id}
+                title={`Conversation about ${product.name}`}
+                lastMessage="Last message 2 hours ago"
+                lastMessageTime="2 hours ago"
+                unreadCount={3}
+                onClick={() => handleOpenChat(product.id)}
+              />
+            ))
+          ) : (
+            <ChatWindow
+              chatId={activeChatId}
+              messages={messages}
+              onSendMessage={handleSendMessage}
+              onClose={() => setActiveChatId(null)} // Close the modal
+            />
+          )}
+        </div>
+      )}
+
       {/* Create Listing Modal */}
       {isCreateModalOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
@@ -312,6 +357,15 @@ const Profile = () => {
           onClose={() => setIsConfirmationModalOpen(false)}
           onConfirm={handleConfirmRemove}
           type={selectedListing?.type || "product"}
+        />
+      )}
+
+      {/* Details Modal */}
+      {isDetailsModalOpen && selectedAsset && (
+        <DetailsModal
+          isOpen={isDetailsModalOpen}
+          onClose={() => setIsDetailsModalOpen(false)}
+          asset={selectedAsset}
         />
       )}
     </div>

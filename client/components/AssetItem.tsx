@@ -22,9 +22,10 @@ const AssetItem: React.FC<AssetItemProps> = ({
 
   return (
     <div
-      className={`${
+      onClick={onView} // Trigger the onView function when clicked
+      className={`cursor-pointer ${
         isNFT
-          ? "cursor-pointer w-[11rem] h-[11rem] rounded-xl overflow-hidden" // Rounded but not circular
+          ? "w-[11rem] h-[11rem] rounded-xl overflow-hidden" // Rounded but not circular
           : "flex items-center gap-4 p-4 rounded-lg"
       } ${
         isNFT
@@ -59,7 +60,10 @@ const AssetItem: React.FC<AssetItemProps> = ({
       {/* View Button (only for products) */}
       {!isNFT && (
         <button
-          onClick={onView}
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent triggering the parent click event
+            onView();
+          }}
           className="cursor-pointer text-lg font-medium text-vivid-pink-500 hover:underline transition-all"
         >
           View

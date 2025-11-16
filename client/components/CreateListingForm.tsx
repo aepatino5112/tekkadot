@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import CustomInput from "@/components/CustomInput";
 import CustomDropdown from "@/components/CustomDropdown";
-import FileUpload from "@/components/FileUpload";
+import FileUpload from "../components/FileUpload"; // Adjust the path as needed
 import Button from "@/components/Button";
 
 interface CreateListingFormProps {

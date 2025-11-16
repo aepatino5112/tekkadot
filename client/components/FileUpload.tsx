@@ -44,35 +44,4 @@ const FileUpload: React.FC<FileUploadProps> = ({
   );
 };
 
-const ParentComponent = () => {
-  const [uploadedFiles, setUploadedFiles] = useState<FileList | null>(null);
-
-  const handleFileUpload = (files: FileList | null) => {
-    setUploadedFiles(files);
-    console.log("Uploaded files:", files);
-  };
-
-  return (
-    <div className="flex flex-col gap-6">
-      <FileUpload label="Images" required onUpload={handleFileUpload} />
-
-      {/* Display Uploaded Files */}
-      {uploadedFiles && (
-        <div className="p-4 rounded-lg border border-white-600 dark:border-black-400 bg-white-300 dark:bg-black-800">
-          <h3 className="text-lg font-medium text-black-500 dark:text-white-500 mb-4">
-            Uploaded Files:
-          </h3>
-          <ul className="list-disc pl-5 text-black-300 dark:text-white-700">
-            {Array.from(uploadedFiles).map((file, index) => (
-              <li key={index}>
-                {file.name} ({(file.size / 1024).toFixed(2)} KB)
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default ParentComponent;
+export default FileUpload;
