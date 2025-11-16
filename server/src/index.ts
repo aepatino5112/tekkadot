@@ -1,7 +1,9 @@
 import express, { type Request, type Response } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import { logger } from './config/logger.js';
+import authRoutes from './routes/authRoutes.js';
 
 // Express server instance
 const app = express();
@@ -9,6 +11,7 @@ const app = express();
 // Middlewares & configs
 dotenv.config();
 app.use(express.json());
+app.use(cookieParser());
 app.use(
     cors({
         origin: 'http://localhost:5173',
@@ -29,6 +32,9 @@ app.get('/api/health', (_: Request, res: Response) => {
     res.status(200).json({ status: 'ok' });
     logger.info('Server is online');
 });
+
+// Routes
+app.use('/api/auth', authRoutes);
 
 // Server listens
 app.listen(PORT, () => {

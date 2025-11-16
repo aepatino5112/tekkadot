@@ -22,6 +22,10 @@
     "license": "ISC",
     "packageManager": "pnpm@10.15.0",
     "dependencies": {
+        "@polkadot/keyring": "^13.5.8",
+        "@polkadot/types": "^16.5.2",
+        "@polkadot/util": "^13.5.8",
+        "@polkadot/util-crypto": "^13.5.8",
         "@upstash/redis": "1.35.6",
         "bcrypt": "6.0.0",
         "cookie-parser": "1.4.7",
