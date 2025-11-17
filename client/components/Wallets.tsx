@@ -65,7 +65,7 @@ const Wallets = ({ onClose }: WalletsProps) => {
               />
               <WalletOption
                 name="SubWallet"
-                onClick={() => handleConnect("subwallet")}
+                onClick={() => handleConnect("subwallet-js")}
               />
               <WalletOption
                 name="Polkadot.Js"

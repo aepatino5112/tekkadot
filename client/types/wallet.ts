@@ -1,4 +1,4 @@
-export type WalletType = "talisman" | "subwallet" | "polkadot-js";
+export type WalletType = "talisman" | "subwallet-js" | "polkadot-js";
 
 export type ConnectedWallet = {
   address: string;

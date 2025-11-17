@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { Sun, Moon, Search, Menu, X, Wallet } from "lucide-react";
+import { Sun, Moon, Search, Menu, X, Wallet, ShoppingCart } from "lucide-react";
 import GradientText from "./GradientText";
 import ConnectBtn from "./ConnectBtn";
 import Wallets from "./Wallets";
@@ -121,8 +121,11 @@ const Navbar = ({
     color: brandColor ?? brands[variant].color,
   };
 
-  const { selectedAccount: user, disconnectWallet: disconnect } =
-    useWalletContext();
+  const {
+    selectedAccount: user,
+    disconnectWallet: disconnect,
+    isConnected,
+  } = useWalletContext();
 
   return (
     <header>
@@ -187,6 +190,7 @@ const Navbar = ({
           {/* Keep search and theme toggle on the navbar when burger is closed */}
           {!isMobileMenuOpen && (
             <>
+              {/*
               <button
                 className="cursor-pointer p-2"
                 onClick={() => true}
@@ -194,6 +198,7 @@ const Navbar = ({
               >
                 <Search className="w-[2.3125rem] h-[2.3125rem] text-black-500 dark:text-white-500" />
               </button>
+               */}
 
               <button
                 onClick={() => setDarkTheme(!darkTheme)}
@@ -216,24 +221,28 @@ const Navbar = ({
                   />
                 </span>
               </button>
+
+              {/* Show Shopping Cart icon when connected */}
+              {isConnected && (
+                <Link href="/cart" className="p-1">
+                  <ShoppingCart className="w-7.5 h-7.5 text-black-500 dark:text-white-500" />
+                </Link>
+              )}
             </>
           )}
 
           {showConnect && (
             <div className="hidden md:block">
               {user ? (
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-black-500 dark:text-white-500">
-                    {user.address.slice(0, 6)}...
-                    {user.address.slice(-4)}
+                <Link
+                  href="/profile"
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg border border-black-500/20 dark:border-white-500/20 bg-white-400 dark:bg-black-500 text-sm font-medium text-black-500 dark:text-white-500 transition-colors hover:bg-gray-200 dark:hover:bg-black-700"
+                >
+                  <Wallet className="w-5 h-5" />
+                  <span>
+                    {user.address.slice(0, 6)}...{user.address.slice(-4)}
                   </span>
-                  <button
-                    onClick={disconnect}
-                    className="text-xs px-2 py-1 border rounded border-gray-400 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800"
-                  >
-                    Disconnect
-                  </button>
-                </div>
+                </Link>
               ) : (
                 <ConnectBtn onClick={() => setIsWalletModalOpen(true)} />
               )}

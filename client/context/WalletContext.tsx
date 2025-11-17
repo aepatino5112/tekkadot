@@ -7,7 +7,10 @@ import {
   web3Enable,
   web3FromAddress,
 } from "@polkadot/extension-dapp";
-import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
+import type {
+  InjectedAccount,
+  InjectedAccountWithMeta,
+} from "@polkadot/extension-inject/types";
 import { getCurrentUser } from "@/lib/api";
 import { WalletType } from "@/types/wallet";
 
@@ -65,52 +68,90 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
         setApi(apiInstance);
       }
     };
-    initApi();
 
-    // Check for existing session on mount
+    // Function to automatically reconnect to the last used wallet
+    const autoConnect = async () => {
+      const lastConnectedWallet = localStorage.getItem(
+        "lastConnectedWallet"
+      ) as WalletType | null;
+      if (lastConnectedWallet) {
+        try {
+          // We wrap this in a try-catch block to handle cases where the user
+          // might have uninstalled the extension since their last visit.
+          await connectWallet(lastConnectedWallet);
+        } catch (error) {
+          console.error("Auto-connect failed:", error);
+          // If auto-connect fails, clear the stored preference
+          localStorage.removeItem("lastConnectedWallet");
+        }
+      }
+    };
+
+    initApi();
+    autoConnect(); // Attempt to auto-connect on page load
+
+    // Check for existing server-side session on mount
     checkSession();
   }, []);
 
   const connectWallet = async (walletName: WalletType) => {
     if (typeof window !== "undefined") {
-      // Access the injected extensions from the window object
+      console.log("Attempting to connect to:", walletName);
       const injectedExtensions = (window as any).injectedWeb3;
 
-      if (!injectedExtensions || !injectedExtensions[walletName]) {
+      // Log all available extensions to see if 'subwallet-js' is present
+      console.log("Available extensions:", Object.keys(injectedExtensions));
+
+      const wallet = injectedExtensions?.[walletName];
+
+      if (!wallet) {
+        console.error(`Extension with key '${walletName}' not found.`);
         throw new Error(
-          `${walletName} extension not found. Please install it.`
+          `The ${walletName} extension is not installed. Please install it.`
         );
       }
+      console.log("Wallet object found:", wallet);
 
       try {
-        // Enable only the selected wallet
-        const wallet = injectedExtensions[walletName];
-        const extension = await wallet.enable("Tekkadot");
+        // This call will trigger the authorization popup if not already approved.
+        // It returns an object with an `accounts` property.
+        const injected = await wallet.enable("Tekkadot");
+        console.log("Wallet enabled. 'injected' object:", injected);
 
-        const accounts = await extension.accounts.get();
+        // Use get() for a one-time fetch of accounts. It's more reliable for an initial connection.
+        const accs: InjectedAccount[] = await injected.accounts.get();
+        console.log("Received accounts from get():", accs);
 
-        if (accounts.length === 0) {
+        if (!accs || accs.length === 0) {
+          // This error will be thrown if the user rejects the connection,
+          // closes the popup, or has no accounts in the wallet.
           throw new Error(
-            `No accounts found for ${walletName}. Please create an account in the extension.`
+            `Authorization failed or no accounts found in ${walletName}. Please approve the connection and ensure you have at least one account.`
           );
         }
 
-        // The accounts from extension.accounts.get() don't have the 'meta' property.
-        // We need to call web3Accounts() to get the full account details including 'meta.source'.
-        const allAccounts = await web3Accounts();
-        const selectedWalletAccounts = allAccounts.filter(
-          (account) => account.meta.source === walletName
-        );
+        console.log("Accounts found, proceeding with connection.");
+        const accountsWithMeta = accs.map((a) => ({
+          address: a.address,
+          type: a.type,
+          meta: {
+            name: a.name,
+            source: walletName,
+            genesisHash: a.genesisHash,
+          },
+        }));
 
-        setAccounts(selectedWalletAccounts);
-        if (selectedWalletAccounts.length > 0) {
-          setSelectedAccount(selectedWalletAccounts[0]);
-        }
+        setAccounts(accountsWithMeta);
+        setSelectedAccount(accountsWithMeta[0]);
         setIsConnected(true);
+        // On successful connection, save the wallet name to localStorage
+        localStorage.setItem("lastConnectedWallet", walletName);
       } catch (error) {
         console.error("Wallet connection failed:", error);
         const message =
-          error instanceof Error ? error.message : "Connection rejected.";
+          error instanceof Error
+            ? error.message
+            : "Connection rejected or failed.";
         throw new Error(message);
       }
     } else {
@@ -122,6 +163,8 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
     setAccounts([]);
     setSelectedAccount(null);
     setIsConnected(false);
+    // On disconnect, remove the wallet preference from localStorage
+    localStorage.removeItem("lastConnectedWallet");
     // Optionally call server to invalidate session
     if (typeof window !== "undefined") {
       document.cookie =
