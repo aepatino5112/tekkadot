@@ -13,6 +13,14 @@ import React, { useEffect, useState } from "react";
 import ChatCard from "@/components/ChatCard";
 import ChatWindow from "@/components/ChatWindow";
 import { useWalletContext } from "@/context/WalletContext";
+import {
+  getUserProducts,
+  getUserNFTs,
+  deleteProduct,
+  deleteNFT,
+  createProduct,
+} from "@/lib/api";
+import { ProductProps, NFTProps } from "@/types/cards";
 
 type Message = {
   sender: "me" | "other"; // The sender can either be "me" or "other"
@@ -145,6 +153,11 @@ const Profile = () => {
       timestamp: "10:30 AM",
     },
   ]);
+  const [products, setProducts] = useState<ProductProps[]>([]);
+  const [nftsData, setNftsData] = useState<NFTProps[]>([]);
+  const [myListings, setMyListings] = useState<(ProductProps | NFTProps)[]>([]);
+  const [myAssets, setMyAssets] = useState<(ProductProps | NFTProps)[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleCreateModalToggle = () => {
     setIsCreateModalOpen(!isCreateModalOpen);
@@ -190,6 +203,37 @@ const Profile = () => {
     router.push("/"); // Redirect to home page after disconnecting
   };
 
+  const fetchUserData = async () => {
+    setIsLoading(true);
+    try {
+      const productsResult = await getUserProducts();
+      const nftsResult = await getUserNFTs();
+      // Assuming getUserProducts/NFTs returns items the user is selling
+      setMyListings([...productsResult.items, ...nftsResult.items]);
+      // You might have another endpoint for assets the user owns
+      // For now, I'll leave myAssets empty as the logic is not defined
+      setMyAssets([]);
+    } catch (error) {
+      console.error("Failed to fetch user data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRemoveListing = async (id: string, type: "product" | "nft") => {
+    try {
+      if (type === "product") {
+        await deleteProduct(id);
+      } else {
+        await deleteNFT(id);
+      }
+      // Refresh the list after deleting
+      fetchUserData();
+    } catch (error) {
+      console.error(`Failed to delete ${type}:`, error);
+    }
+  };
+
   useEffect(() => {
     // If the component mounts and the user is not connected, redirect them.
     // This prevents unauthenticated access to the profile page.
@@ -213,9 +257,51 @@ const Profile = () => {
     }
   }, [isCreateModalOpen, isConfirmationModalOpen]);
 
+  useEffect(() => {
+    const loadListings = async () => {
+      try {
+        const prods = await getUserProducts();
+        setProducts(prods.items);
+        const nftsData = await getUserNFTs();
+        setNftsData(nftsData.items);
+      } catch (error) {
+        console.error("Failed to load listings:", error);
+      }
+    };
+    loadListings();
+  }, []);
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  // Example CRUD handlers (integrate into your UI, e.g., forms/buttons)
+  const handleCreateProduct = async (data: {
+    title: string;
+    description: string;
+    collection: "gaming" | "laptop" | "mobile" | "wearable";
+    price: number;
+    ipfs_hash?: string;
+    status?: "listed" | "sold";
+    image?: File;
+  }) => {
+    try {
+      await createProduct(data);
+      // Reload or update state
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // Similar for update, delete, and NFTs
+
   // Render nothing or a loading spinner while waiting for the connection status
   if (!isConnected || !selectedAccount) {
     return null;
+  }
+
+  if (isLoading) {
+    return <div>Loading profile...</div>;
   }
 
   return (

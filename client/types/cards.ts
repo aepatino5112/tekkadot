@@ -21,25 +21,33 @@ export interface NFT {
     updatedAt?: Date;
 }
 
-// Type for props in Products Cards
+// Type for props in Products Cards (updated to match API response)
 export interface ProductProps {
   type: "product"; // Add type discriminator
-  id: string;
-  name: string;
+  id: string; // Maps to product_id
+  name: string; // Maps to title
+  description: string; // New field
+  collection: string;
   price: number;
-  imageUrl: string;
-  collection : string;
+  imageUrl: string; // Maps to ipfs_hash
+  status: "listed" | "sold"; // New field
+  created_at: string; // New field
+  seller_id: string; // New field
 }
 
-// Type for props in NFTs Cards
+// Type for props in NFTs Cards (updated to match API response)
 export interface NFTProps {
   type: "nft"; // Add type discriminator
-  id:string;
-  name: string;
-  price: number;
-  rareness: string;
+  id: string; // Maps to nft_id
+  name: string; // Maps to title
+  description: string; // New field
   category: string;
-  imageUrl: string;
+  rareness: "common" | "rare" | "epic" | "legendary";
+  price: number;
+  imageUrl: string; // Maps to ipfs_hash
+  status: "listed" | "sold"; // New field
+  created_at: string; // New field
+  creator_id: string; // Changed from seller_id to match API
 }
 
 // Type for featured products props

@@ -3,27 +3,23 @@ import FeaturedProducts from "@/components/FeaturedProducts";
 import FeaturedNFTs from "@/components/FeaturedNFTs";
 import DiagonalSelector from "@/components/DiagonalSelector";
 import Newsletter from "@/components/Newsletter";
-import GlassButton from "@/components/GlassButton";
-import { type ProductProps, NFTProps } from "@/types/cards";
+import { type ProductProps, type NFTProps } from "@/types/cards";
+import { searchProducts, searchNFTs } from "@/lib/api";
 
+const Home = async () => {
+  let products: ProductProps[] = [];
+  let nfts: NFTProps[] = [];
 
-// ! Placeholder data to show up and test the UI
-const products: ProductProps[] = [
-  { id: 1, name: "PlayStation 5", price: 202.5, trustIndex: 92, imageUrl: "/images/playstation5.jpg" },
-  { id: 2, name: "Xbox Series X", price: 250.2, trustIndex: 85, imageUrl: "/images/xbox.jpg" },
-  { id: 3, name: "Nintendo S...", price: 300.8, trustIndex: 78, imageUrl: "/images/switch.jpg" },
-  { id: 4, name: "iPhone 17", price: 632.50, trustIndex: 82, imageUrl: "/images/iphone.jpg" }
-];
+  try {
+    const productsResult = await searchProducts({ page: 1, sort: "newest" });
+    products = productsResult.items.slice(0, 4); // Take the first 4 for the featured section
 
-const nfts: NFTProps[] = [
-  { id: 1, name: "Hazel-G", price: 12, rareness: "Rare", category: "Fresh", imageUrl: "/images/hazel-glasses.jpg" },
-  { id: 2, name: "Gold Hand", price: 42.5, rareness: "Epic", category: "Style", imageUrl: "/images/hand.jpg" },
-  { id: 3, name: "Cyber Tree", price: 430, rareness: "Legendary", category: "Tree", imageUrl: "/images/melon.jpg" },
-  { id: 4, name: "Freedom", price: 5, rareness: "Common", category: "Speech", imageUrl: "/images/free.jpg" }
-];
-
-
-const Home = () => {
+    const nftsResult = await searchNFTs({ page: 1, sort: "newest" });
+    nfts = nftsResult.items.slice(0, 4); // Take the first 4 for the featured section
+  } catch (error) {
+    console.error("Failed to fetch featured data:", error);
+    // Fallback to empty arrays on error
+  }
 
   return (
     <div className="flex flex-col w-full px-10 min-w-0 overflow-x-hidden">
