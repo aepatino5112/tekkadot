@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { MoveLeft } from "lucide-react";
 import SectionSelector from "@/components/SectionSelector";
 import AssetItem from "@/components/AssetItem";
@@ -12,6 +12,7 @@ import DetailsModal from "@/components/DetailsModal"; // Import DetailsModal
 import React, { useEffect, useState } from "react";
 import ChatCard from "@/components/ChatCard";
 import ChatWindow from "@/components/ChatWindow";
+import { useWalletContext } from "@/context/WalletContext";
 
 type Message = {
   sender: "me" | "other"; // The sender can either be "me" or "other"
@@ -118,6 +119,8 @@ const initialListings: ListingType[] = [
 
 const Profile = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { selectedAccount, disconnectWallet, isConnected } = useWalletContext();
   const [activeSection, setActiveSection] = useState("Assets");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false); // State for CreateListingForm modal
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false); // State for ConfirmationModal
@@ -182,6 +185,26 @@ const Profile = () => {
     ]);
   };
 
+  const handleDisconnect = () => {
+    disconnectWallet();
+    router.push("/"); // Redirect to home page after disconnecting
+  };
+
+  useEffect(() => {
+    // If the component mounts and the user is not connected, redirect them.
+    // This prevents unauthenticated access to the profile page.
+    if (!isConnected) {
+      router.push("/");
+    }
+  }, [isConnected, router]);
+
+  useEffect(() => {
+    const section = searchParams.get("section");
+    if (section === "Messages") {
+      setActiveSection("Messages");
+    }
+  }, [searchParams]);
+
   useEffect(() => {
     if (isCreateModalOpen || isConfirmationModalOpen) {
       document.documentElement.classList.add("overflow-hidden");
@@ -189,6 +212,11 @@ const Profile = () => {
       document.documentElement.classList.remove("overflow-hidden");
     }
   }, [isCreateModalOpen, isConfirmationModalOpen]);
+
+  // Render nothing or a loading spinner while waiting for the connection status
+  if (!isConnected || !selectedAccount) {
+    return null;
+  }
 
   return (
     <div className="flex flex-col w-full px-6 sm:px-10 min-w-0 overflow-x-hidden">
@@ -206,7 +234,8 @@ const Profile = () => {
 
             <div>
               <h1 className="font-bold text-[1.75rem] lg:text-[2.25rem] text-black-500 dark:text-white-500">
-                Connected as 14x...abc
+                Connected as {selectedAccount.address.slice(0, 6)}...
+                {selectedAccount.address.slice(-4)}
               </h1>
               <p className="text-lg text-black-300 dark:text-white-700">
                 Wallet Identity
@@ -214,11 +243,7 @@ const Profile = () => {
             </div>
           </div>
 
-          <Button
-            variant="secondary"
-            type="product"
-            onClick={() => console.log("Disconnect Wallet")}
-          >
+          <Button variant="secondary" type="product" onClick={handleDisconnect}>
             Disconnect
           </Button>
         </div>

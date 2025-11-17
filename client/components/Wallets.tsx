@@ -54,8 +54,12 @@ const Wallets = ({ onClose }: WalletsProps) => {
                 </button>
               </div>
               <div>
-                <p className="font-normal text-200 leading-300 text-black-500 pt-4 pb-12 dark:text-white-500">
+                <p className="font-normal text-200 leading-300 text-black-500 pt-4 pb-4 dark:text-white-500">
                   Choose your preferred wallet to connect to Tekka
+                </p>
+                <p className="text-sm font-medium text-vivid-pink-500 dark:text-vivid-pink-500 pb-8">
+                  Note: You must have the corresponding browser extension
+                  installed to connect.
                 </p>
               </div>
             </div>

@@ -8,6 +8,7 @@ import Wallets from "./Wallets";
 import { useEffect, useState, useLayoutEffect, startTransition } from "react";
 import { usePathname } from "next/navigation";
 import { useWalletContext } from "@/context/WalletContext";
+import { useCartContext } from "@/context/CartContext";
 
 type Variant = "default" | "products" | "nfts";
 
@@ -126,25 +127,28 @@ const Navbar = ({
     disconnectWallet: disconnect,
     isConnected,
   } = useWalletContext();
+  const { cartItems } = useCartContext();
 
   return (
     <header>
       <nav className="navbar flex items-center justify-between px-4 py-3 md:px-8">
         <div className="relative flex items-center gap-4">
-          <Image
-            src={brand.light}
-            alt="logo light"
-            width={155.48}
-            height={42}
-            className="block dark:hidden"
-          />
-          <Image
-            src={brand.dark}
-            alt="logo dark"
-            width={155.48}
-            height={42}
-            className="hidden dark:block"
-          />
+          <Link href="/" aria-label="Go to homepage">
+            <Image
+              src={brand.light}
+              alt="logo light"
+              width={155.48}
+              height={42}
+              className="block dark:hidden"
+            />
+            <Image
+              src={brand.dark}
+              alt="logo dark"
+              width={155.48}
+              height={42}
+              className="hidden dark:block"
+            />
+          </Link>
         </div>
 
         <div className="links hidden md:flex gap-6 items-center text-sm md:text-base lg:text-lg">
@@ -224,8 +228,13 @@ const Navbar = ({
 
               {/* Show Shopping Cart icon when connected */}
               {isConnected && (
-                <Link href="/cart" className="p-1">
+                <Link href="/cart" className="relative p-1">
                   <ShoppingCart className="w-7.5 h-7.5 text-black-500 dark:text-white-500" />
+                  {cartItems.length > 0 && (
+                    <span className="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-vivid-pink-500 text-xs font-bold text-white">
+                      {cartItems.length}
+                    </span>
+                  )}
                 </Link>
               )}
             </>
@@ -297,22 +306,28 @@ const Navbar = ({
               className="flex items-center justify-between px-6 py-5"
               style={{ backgroundColor: brand.color }} /* main color */
             >
-              <div className="flex items-center gap-3">
-                <Image
-                  src={brand.light}
-                  alt="logo"
-                  width={140}
-                  height={36}
-                  className="block dark:hidden"
-                />
-                <Image
-                  src={brand.dark}
-                  alt="logo dark"
-                  width={140}
-                  height={36}
-                  className="hidden dark:block"
-                />
-              </div>
+              <Link
+                href="/"
+                onClick={() => setIsMobileMenuOpen(false)}
+                aria-label="Go to homepage"
+              >
+                <div className="flex items-center gap-3">
+                  <Image
+                    src={brand.light}
+                    alt="logo"
+                    width={140}
+                    height={36}
+                    className="block dark:hidden"
+                  />
+                  <Image
+                    src={brand.dark}
+                    alt="logo dark"
+                    width={140}
+                    height={36}
+                    className="hidden dark:block"
+                  />
+                </div>
+              </Link>
 
               <div className="flex items-center gap-3">
                 {/* simplified connect wallet (no background) */}

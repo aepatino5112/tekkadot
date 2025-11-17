@@ -1,7 +1,8 @@
 // src/services/authService.ts
 import { supabase } from '../config/supabase.js';
-import { makeNonce, verifySignature } from '../utils/crypto.js';
+import { makeNonce } from '../utils/crypto.js'; // verifySignature is no longer needed from here
 import { signJwt } from '../utils/jwt.js';
+import { signatureVerify } from "@polkadot/util-crypto";
 
 type WalletType = 'talisman' | 'polkadotjs' | 'subwallet';
 
@@ -16,13 +17,10 @@ export class AuthService {
     }
 
     static async verifyAndLogin(wallet_address: string, wallet_type: WalletType, signature: string) {
-        const entry = nonces.get(wallet_address);
-        if (!entry || entry.expiresAt < Date.now()) throw new Error('Nonce expired or missing');
-
-        const isValid = verifySignature(entry.nonceHex, signature, wallet_address);
-        if (!isValid) throw new Error('Invalid signature');
-
-        nonces.delete(wallet_address);
+        const verificationResult = this._verifySignatureAndNonce(wallet_address, signature);
+        if (!verificationResult.isValid) {
+            throw new Error(verificationResult.error || 'Invalid signature');
+        }
 
         // Check if wallet already exists
         const { data: existingWallets, error: walletErr } = await supabase
@@ -68,13 +66,10 @@ export class AuthService {
     }
 
     static async linkWallet(current_user_id: string, wallet_address: string, wallet_type: WalletType, signature: string) {
-        const entry = nonces.get(wallet_address);
-        if (!entry || entry.expiresAt < Date.now()) throw new Error('Nonce expired or missing');
-
-        const isValid = verifySignature(entry.nonceHex, signature, wallet_address);
-        if (!isValid) throw new Error('Invalid signature');
-
-        nonces.delete(wallet_address);
+        const verificationResult = this._verifySignatureAndNonce(wallet_address, signature);
+        if (!verificationResult.isValid) {
+            throw new Error(verificationResult.error || 'Invalid signature');
+        }
 
         const { data: existingWallets } = await supabase
             .from('wallets')
@@ -111,5 +106,48 @@ export class AuthService {
             .single();
         if (error) throw new Error("User not found");
         return user;
+    }
+
+    // This method can be removed as its logic is now in _verifySignatureAndNonce
+    /*
+    static async verifyNonce(wallet_address: string, signature: string) { ... }
+    */
+
+    // This method can be removed as its logic is now in _verifySignatureAndNonce
+    /*
+    static async verifyLogin(wallet_address: string, signature: string) { ... }
+    */
+
+    // This method can be removed as its logic is now in _verifySignatureAndNonce
+    /*
+    static async findOrCreateUser(wallet_address: string, wallet_type: WalletType, signature: string) { ... }
+    */
+
+    /**
+     * Private helper to encapsulate nonce retrieval and signature verification.
+     * This is the single source of truth for verification.
+     */
+    private static _verifySignatureAndNonce(wallet_address: string, signature: string): { isValid: boolean, error?: string } {
+        const nonceData = nonces.get(wallet_address);
+
+        if (!nonceData || nonceData.expiresAt < Date.now()) {
+            nonces.delete(wallet_address);
+            return { isValid: false, error: "Nonce expired or not found" };
+        }
+
+        const { nonceHex } = nonceData;
+
+        // Pass the hex string directly to signatureVerify.
+        // The utility will handle the conversion from hex to bytes internally.
+        const { isValid } = signatureVerify(nonceHex, signature, wallet_address);
+
+        // Clean up the used nonce immediately after verification attempt.
+        nonces.delete(wallet_address);
+
+        if (!isValid) {
+            return { isValid: false, error: "Invalid signature" };
+        }
+
+        return { isValid: true };
     }
 }

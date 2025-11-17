@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams } from "next/navigation";
 import ProductsList from "@/components/ProductsList";
 import Pagination from "@/components/Pagination";
 import FilterButton from "@/components/FilterButton";
@@ -15,30 +15,33 @@ interface Props {
 
 export default function ProductsPageClient({ products }: Props) {
   const searchParams = useSearchParams();
-  const initialPage = parseInt(searchParams?.get('page') ?? '1', 10) || 1;
+  const initialPage = parseInt(searchParams?.get("page") ?? "1", 10) || 1;
 
   const [currentPage, setCurrentPage] = useState<number>(initialPage);
 
   useEffect(() => {
-    const p = parseInt(searchParams?.get('page') ?? '1', 10) || 1;
+    const p = parseInt(searchParams?.get("page") ?? "1", 10) || 1;
     if (p !== currentPage) setCurrentPage(p);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams?.toString()]);
 
-  const sortParam = (searchParams?.get('sort')) ?? '';
-  const collectionParam = (searchParams?.get('collection')) ?? '';
+  const sortParam = searchParams?.get("sort") ?? "";
+  const collectionParam = searchParams?.get("collection") ?? "";
 
   const sortedProducts = useMemo(() => {
+    // Create a shallow copy to avoid mutating the original 'products' array
     const copy = [...products];
     switch (sortParam) {
-      case 'h-price':
-        return copy.sort((a, b) => b.price - a.price);
-      case 'l-price':
-        return copy.sort((a, b) => a.price - b.price);
-      case 'newest':
-        return copy.sort((a, b) => b.id - a.id);
-      case 'oldest':
-        return copy.sort((a, b) => a.id - b.id);
+      case "h-price":
+        // Convert price strings to numbers before subtracting
+        return copy.sort((a, b) => +b.price - +a.price);
+      case "l-price":
+        return copy.sort((a, b) => +a.price - +b.price);
+      case "newest":
+        // Convert id strings to numbers before subtracting
+        return copy.sort((a, b) => +b.id - +a.id);
+      case "oldest":
+        return copy.sort((a, b) => +a.id - +b.id);
       default:
         return copy;
     }
@@ -46,10 +49,14 @@ export default function ProductsPageClient({ products }: Props) {
 
   const filteredProducts = useMemo(() => {
     if (!collectionParam) return sortedProducts;
-    return sortedProducts.filter((p) => (p as any).collection === collectionParam);
+    // No need for 'as any' if the type is correct
+    return sortedProducts.filter((p) => p.collection === collectionParam);
   }, [sortedProducts, collectionParam]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE));
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredProducts.length / PAGE_SIZE)
+  );
 
   const visibleProducts = useMemo(() => {
     const start = (currentPage - 1) * PAGE_SIZE;
@@ -59,7 +66,9 @@ export default function ProductsPageClient({ products }: Props) {
   return (
     <div>
       <div className="flex justify-start items-center gap-3 mt-4">
-        <p className="text-[0.8rem] lg:text-[1.1rem] font-medium text-black-300 dark:text-white-300">Filter by</p>
+        <p className="text-[0.8rem] lg:text-[1.1rem] font-medium text-black-300 dark:text-white-300">
+          Filter by
+        </p>
         <FilterButton />
       </div>
 
