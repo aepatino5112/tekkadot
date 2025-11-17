@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { WalletProvider } from "@/components/WalletProvider";
 
 
 export const metadata: Metadata = {
@@ -16,9 +17,11 @@ export default function ServiceTermsLayout({
 }>) {
   return (
     <section>
-        <Navbar />
-        <main className="grow">{children}</main>
-        <Footer />
+        <WalletProvider>
+          <Navbar />
+            <main className="grow">{children}</main>
+          <Footer />
+        </WalletProvider>
     </section>
   );
 }
