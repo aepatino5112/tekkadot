@@ -1,3 +1,4 @@
-export type WalletOptionProps = {
-    name: string;
-};
+export interface WalletOptionProps {
+  name: string;
+  onClick: () => void;
+}

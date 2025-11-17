@@ -15,7 +15,7 @@ export default function LandingLayout({
   return (
       <section>
         <Navbar />
-            <main className="grow">{children}</main>
+          <main className="grow">{children}</main>
         <Footer />
       </section>
   );

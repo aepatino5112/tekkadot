@@ -9,6 +9,12 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@polkadot/api": "^16.5.2",
+    "@polkadot/extension-dapp": "^0.62.4",
+    "@polkadot/extension-inject": "^0.62.4",
+    "@polkadot/keyring": "^13.5.8",
+    "@polkadot/util": "^13.5.8",
+    "@polkadot/util-crypto": "^13.5.8",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.552.0",
@@ -16,6 +22,7 @@
     "ogl": "^1.0.11",
     "react": "19.2.0",
     "react-dom": "19.2.0",
+    "react-hot-toast": "^2.6.0",
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
