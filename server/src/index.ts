@@ -4,6 +4,8 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { logger } from './config/logger.js';
 import authRoutes from './routes/authRoutes.js';
+import nftRoutes from './routes/nftRoutes.js';
+import productRoutes from './routes/productRoutes.js';
 
 // Express server instance
 const app = express();
@@ -35,6 +37,8 @@ app.get('/api/health', (_: Request, res: Response) => {
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/nfts', nftRoutes);
+app.use('/api/products', productRoutes);
 
 // Server listens
 app.listen(PORT, () => {
