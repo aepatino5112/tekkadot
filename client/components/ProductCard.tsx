@@ -1,19 +1,23 @@
 "use client";
 
 import { type ProductProps } from "@/types/cards";
-import { ShieldCheck, MessageCircle, ShoppingCart } from "lucide-react";
+import { MessageCircle, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCartContext } from "@/context/CartContext";
 import { useWalletContext } from "@/context/WalletContext";
 import { toast } from "react-hot-toast";
+import { useState } from "react";
 
 const ProductCard = (props: ProductProps) => {
+  console.log('ProductCard props:', props);
   const { id, name, price, imageUrl } = props;
+  console.log('ProductCard name:', name);
   const router = useRouter();
   const { addToCart } = useCartContext();
   const { isConnected } = useWalletContext();
+  const [imageError, setImageError] = useState(false);
 
   const handleMessageClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -41,14 +45,27 @@ const ProductCard = (props: ProductProps) => {
       <article className="flex flex-col w-full overflow-hidden">
         {/* Image (square) */}
         <div className="relative w-full" style={{ paddingTop: "100%" }}>
-          <Image
-            src={imageUrl}
-            alt={name}
-            fill
-            className="object-cover object-center"
-            sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 25vw"
-            style={{ borderRadius: "1rem" }}
-          />
+          {imageError || !imageUrl ? (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-lg">
+              <Image
+                src="/images/product.svg"
+                alt="Product placeholder"
+                width={64}
+                height={64}
+                className="opacity-50"
+              />
+            </div>
+          ) : (
+            <Image
+              src={imageUrl}
+              alt={name || "Product image"}
+              fill
+              className="object-cover object-center"
+              sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 25vw"
+              style={{ borderRadius: "1rem" }}
+              onError={() => setImageError(true)}
+            />
+          )}
           <div className="absolute top-3 right-3 flex gap-2 z-10">
             <button
               onClick={handleMessageClick}

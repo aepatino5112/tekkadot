@@ -119,6 +119,7 @@ export async function searchNFTs(req: Request, res: Response) {
         const page = parsePage(req.query?.page);
         const sort = narrowSort(req.query?.sort);
         const result = await nftService.searchNFTs({ page, sort });
+        console.log('NFT search result:', JSON.stringify(result, null, 2));
         res.json(result);
     } catch (err: unknown) {
         res.status(400).json({ error: getMessage(err) });

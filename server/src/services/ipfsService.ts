@@ -40,6 +40,10 @@ export function ipfsGatewayUrl(hash: string): string {
     if (!PINATA_GATEWAY) {
         return 'Error';
     }
+    // If hash is already a full URL, return it as is
+    if (hash.startsWith('http://') || hash.startsWith('https://')) {
+        return hash;
+    }
     const gateway = PINATA_GATEWAY.replace(/\/+$/, '');
     return `${gateway}/${hash}`;
 }

@@ -113,6 +113,7 @@ export async function searchProducts(req: Request, res: Response) {
         const sort = narrowSort(req.query?.sort);
         const collection = narrowCollection(req.query?.collection);
         const result = await productService.searchProducts({ page, sort, collection });
+        console.log('Product search result:', JSON.stringify(result, null, 2));
         res.json(result);
     } catch (err: unknown) {
         res.status(400).json({ error: getMessage(err) });

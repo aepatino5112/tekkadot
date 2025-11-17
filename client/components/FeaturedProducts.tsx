@@ -26,11 +26,7 @@ const FeaturedProducts = ({ products }: FeaturedProductsProps) => {
         {products.map((product) => (
           <ProductCard
             key={product.id + "-product"}
-            id={product.id}
-            name={product.name}
-            price={product.price}
-            trustIndex={product.trustIndex}
-            imageUrl={product.imageUrl}
+            {...product}
           />
         ))}
       </div>

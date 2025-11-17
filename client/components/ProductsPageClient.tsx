@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import ProductsList from "@/components/ProductsList";
 import Pagination from "@/components/Pagination";
 import FilterButton from "@/components/FilterButton";
 import { type ProductProps } from "@/types/cards";
+import { searchProducts } from "@/lib/api";
 
 const PAGE_SIZE = 16;
 
@@ -13,55 +14,43 @@ interface Props {
   products: ProductProps[];
 }
 
-export default function ProductsPageClient({ products }: Props) {
+export default function ProductsPageClient({ products: initialProducts }: Props) {
   const searchParams = useSearchParams();
-  const initialPage = parseInt(searchParams?.get("page") ?? "1", 10) || 1;
 
-  const [currentPage, setCurrentPage] = useState<number>(initialPage);
-
-  useEffect(() => {
-    const p = parseInt(searchParams?.get("page") ?? "1", 10) || 1;
-    if (p !== currentPage) setCurrentPage(p);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams?.toString()]);
+  const [products, setProducts] = useState<ProductProps[]>(initialProducts);
+  const [loading, setLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   const sortParam = searchParams?.get("sort") ?? "";
   const collectionParam = searchParams?.get("collection") ?? "";
 
-  const sortedProducts = useMemo(() => {
-    // Create a shallow copy to avoid mutating the original 'products' array
-    const copy = [...products];
-    switch (sortParam) {
-      case "h-price":
-        // Convert price strings to numbers before subtracting
-        return copy.sort((a, b) => +b.price - +a.price);
-      case "l-price":
-        return copy.sort((a, b) => +a.price - +b.price);
-      case "newest":
-        // Convert id strings to numbers before subtracting
-        return copy.sort((a, b) => +b.id - +a.id);
-      case "oldest":
-        return copy.sort((a, b) => +a.id - +b.id);
-      default:
-        return copy;
-    }
-  }, [products, sortParam]);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const result = await searchProducts({
+          page: currentPage,
+          sort: sortParam as any,
+          collection: collectionParam as any,
+        });
+        setProducts(result.items);
+        setTotalPages(result.meta.totalPages);
+      } catch (error) {
+        console.error("Failed to fetch products:", error);
+        setProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const filteredProducts = useMemo(() => {
-    if (!collectionParam) return sortedProducts;
-    // No need for 'as any' if the type is correct
-    return sortedProducts.filter((p) => p.collection === collectionParam);
-  }, [sortedProducts, collectionParam]);
+    fetchProducts();
+  }, [currentPage, sortParam, collectionParam]);
 
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredProducts.length / PAGE_SIZE)
-  );
-
-  const visibleProducts = useMemo(() => {
-    const start = (currentPage - 1) * PAGE_SIZE;
-    return filteredProducts.slice(start, start + PAGE_SIZE);
-  }, [currentPage, filteredProducts]);
+  useEffect(() => {
+    const p = parseInt(searchParams?.get("page") ?? "1", 10) || 1;
+    setCurrentPage(p);
+  }, [searchParams]);
 
   return (
     <div>
@@ -72,7 +61,11 @@ export default function ProductsPageClient({ products }: Props) {
         <FilterButton />
       </div>
 
-      <ProductsList products={visibleProducts} />
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        <ProductsList products={products} />
+      )}
 
       <Pagination
         currentPage={currentPage}

@@ -12,9 +12,11 @@ const Home = async () => {
 
   try {
     const productsResult = await searchProducts({ page: 1, sort: "newest" });
+    console.log('Client received products:', productsResult);
     products = productsResult.items.slice(0, 4); // Take the first 4 for the featured section
 
     const nftsResult = await searchNFTs({ page: 1, sort: "newest" });
+    console.log('Client received NFTs:', nftsResult);
     nfts = nftsResult.items.slice(0, 4); // Take the first 4 for the featured section
   } catch (error) {
     console.error("Failed to fetch featured data:", error);

@@ -2,6 +2,7 @@
 import { supabase } from '../config/supabase.js';
 import { HttpError } from '../utils/error.js';
 import { PAGE_SIZE, getPagination, getOrderForSort } from '../utils/pagination.js';
+import { ipfsGatewayUrl } from './ipfsService.js';
 import type { NFTCreate, NFTUpdate, SortKey } from '../types/enums.js';
 
 export async function createNFT(userId: string, payload: NFTCreate) {
@@ -45,7 +46,19 @@ export async function getNFTsByUser(userId: string) {
         .eq('creator_id', userId)
         .order('created_at', { ascending: false });
     if (error) throw new HttpError(400, error.message);
-    return data;
+    return (data ?? []).map(item => ({
+        type: 'nft' as const,
+        id: item.nft_id,
+        name: item.title || 'Unnamed NFT',
+        description: item.description || '',
+        category: item.category,
+        rareness: item.rareness,
+        price: item.price,
+        imageUrl: item.ipfs_hash ? ipfsGatewayUrl(item.ipfs_hash) : '',
+        status: item.status,
+        created_at: item.created_at,
+        creator_id: item.creator_id,
+    }));
 }
 
 export async function searchNFTs(params: { page: number; sort?: SortKey }) {
@@ -59,8 +72,26 @@ export async function searchNFTs(params: { page: number; sort?: SortKey }) {
         .limit(limit)
         .range(offset, offset + PAGE_SIZE - 1);
     if (error) throw new HttpError(400, error.message);
+    const transformedData = (data ?? []).map(item => {
+        console.log('NFT item from DB:', item);
+        const transformed = {
+            type: 'nft' as const,
+            id: item.nft_id,
+            name: item.title || 'Unnamed NFT',
+            description: item.description || '',
+            category: item.category,
+            rareness: item.rareness,
+            price: item.price,
+            imageUrl: item.ipfs_hash ? ipfsGatewayUrl(item.ipfs_hash) : '',
+            status: item.status,
+            created_at: item.created_at,
+            creator_id: item.creator_id,
+        };
+        console.log('Transformed NFT:', transformed);
+        return transformed;
+    });
     return {
-        items: data ?? [],
+        items: transformedData,
         meta: {
             page,
             pageSize: PAGE_SIZE,

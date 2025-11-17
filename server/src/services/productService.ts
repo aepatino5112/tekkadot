@@ -2,6 +2,7 @@
 import { supabase } from '../config/supabase.js';
 import { HttpError } from '../utils/error.js';
 import { PAGE_SIZE, getPagination, getOrderForSort } from '../utils/pagination.js';
+import { ipfsGatewayUrl } from './ipfsService.js';
 import type { Collection, ProductCreate, ProductUpdate, SortKey } from '../types/enums.js';
 
 export async function createProduct(userId: string, payload: ProductCreate) {
@@ -45,7 +46,18 @@ export async function getProductsByUser(userId: string) {
         .eq('seller_id', userId)
         .order('created_at', { ascending: false });
     if (error) throw new HttpError(400, error.message);
-    return data;
+    return (data ?? []).map(item => ({
+        type: 'product' as const,
+        id: item.product_id,
+        name: item.title || 'Unnamed Product',
+        description: item.description || '',
+        collection: item.collection,
+        price: item.price,
+        imageUrl: item.ipfs_hash ? ipfsGatewayUrl(item.ipfs_hash) : '',
+        status: item.status,
+        created_at: item.created_at,
+        seller_id: item.seller_id,
+    }));
 }
 
 export async function searchProducts(params: { page: number; sort?: SortKey; collection?: Collection }) {
@@ -61,8 +73,25 @@ export async function searchProducts(params: { page: number; sort?: SortKey; col
     if (params.collection) query = query.eq('collection', params.collection);
     const { data, error, count } = await query;
     if (error) throw new HttpError(400, error.message);
+    const transformedData = (data ?? []).map(item => {
+        console.log('Product item from DB:', item);
+        const transformed = {
+            type: 'product' as const,
+            id: item.product_id,
+            name: item.title || 'Unnamed Product',
+            description: item.description || '',
+            collection: item.collection,
+            price: item.price,
+            imageUrl: item.ipfs_hash ? ipfsGatewayUrl(item.ipfs_hash) : '',
+            status: item.status,
+            created_at: item.created_at,
+            seller_id: item.seller_id,
+        };
+        console.log('Transformed product:', transformed);
+        return transformed;
+    });
     return {
-        items: data ?? [],
+        items: transformedData,
         meta: {
             page,
             pageSize: PAGE_SIZE,

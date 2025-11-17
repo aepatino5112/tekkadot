@@ -8,12 +8,19 @@ import { useRouter } from "next/navigation";
 import { useCartContext } from "@/context/CartContext";
 import { useWalletContext } from "@/context/WalletContext";
 import { toast } from "react-hot-toast";
+import { useState } from "react";
 
 const NFTCard = (props: NFTProps) => {
+  console.log('NFTCard props:', props);
   const { id, name, price, rareness, category, imageUrl } = props;
+  console.log('NFTCard name:', name);
   const router = useRouter();
   const { addToCart } = useCartContext();
   const { isConnected } = useWalletContext();
+  const [imageError, setImageError] = useState(false);
+
+  // Helper function to capitalize first letter
+  const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
   const handleMessageClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -41,14 +48,27 @@ const NFTCard = (props: NFTProps) => {
       <article className="flex flex-col w-full overflow-hidden">
         {/* responsive square image */}
         <div className="relative w-full" style={{ paddingTop: "100%" }}>
-          <Image
-            src={imageUrl}
-            alt={name}
-            fill
-            className="object-cover object-center"
-            sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 25vw"
-            style={{ borderRadius: "1rem" }}
-          />
+          {imageError || !imageUrl ? (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-lg">
+              <Image
+                src="/images/nft.svg"
+                alt="NFT placeholder"
+                width={64}
+                height={64}
+                className="opacity-50"
+              />
+            </div>
+          ) : (
+            <Image
+              src={imageUrl}
+              alt={name || "NFT image"}
+              fill
+              className="object-cover object-center"
+              sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 25vw"
+              style={{ borderRadius: "1rem" }}
+              onError={() => setImageError(true)}
+            />
+          )}
           <div className="absolute top-3 right-3 flex gap-3 z-10">
             <button
               onClick={handleMessageClick}
@@ -76,11 +96,11 @@ const NFTCard = (props: NFTProps) => {
 
             <div className="flex flex-wrap gap-2 mt-2">
               <span className="text-sm font-medium text-lime-green-600 dark:text-lime-green-400 px-2 py-0.5 border-2 border-lime-green-600 dark:border-lime-green-400 bg-lime-green-100/50 rounded-xl">
-                {rareness}
+                {capitalize(rareness)}
               </span>
 
               <span className="text-sm font-medium text-black-400 dark:text-white-400 px-2 py-0.5 border-2 border-black-400 dark:border-white-400 bg-black-500/50 dark:bg-white-500/50 rounded-xl">
-                {category}
+                {capitalize(category)}
               </span>
             </div>
           </div>

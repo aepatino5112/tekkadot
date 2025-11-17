@@ -27,12 +27,7 @@ const FeaturedNFTs = ({ nfts }: FeaturedNFTsProps) => {
         {nfts.map((nft) => (
           <NFTCard
             key={nft.id + "-nft"}
-            id={nft.id}
-            name={nft.name}
-            price={nft.price}
-            rareness={nft.rareness}
-            category={nft.category}
-            imageUrl={nft.imageUrl}
+            {...nft}
           />
         ))}
       </div>
