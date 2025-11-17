@@ -4,38 +4,18 @@ import { useRouter } from "next/navigation";
 import { MoveLeft, ShoppingCart } from "lucide-react";
 import CartItem from "@/components/CartItem";
 import Button from "@/components/Button";
-
-// Define the type for cart items
-type CartItemType = {
-  id: string;
-  name: string;
-  price: number;
-  tags: string[];
-  type: "product" | "nft"; // Restrict type to "product" or "nft"
-  imageUrl: string;
-  onRemove: () => void;
-};
+import { useCartContext } from "@/context/CartContext"; // Import the context hook
 
 const Cart = () => {
   const router = useRouter();
+  const { cartItems, removeFromCart } = useCartContext(); // Get items and functions from context
 
-  // Simulated cart items
-  const cartItems: CartItemType[] = [
-    {
-      id: "1",
-      name: "Gaming Laptop",
-      price: 1200,
-      tags: ["electronics", "gaming"],
-      type: "product",
-      imageUrl: "/images/gaming-laptop.jpg",
-      onRemove: () => console.log("Remove Gaming Laptop"),
-    }
-  ];
-
-  const subtotal = cartItems.reduce((acc, item) => acc + item.price, 0);
-  const networkFee = 0.05;
-  const loyaltyDiscount = -0.02;
-  const total = subtotal + networkFee + loyaltyDiscount;
+  const subtotal = cartItems.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
+  const networkFee = cartItems.length > 0 ? 0.05 : 0; // Only apply fee if cart is not empty
+  const total = subtotal + networkFee;
 
   return (
     <div className="flex flex-col w-full px-6 sm:px-10 min-w-0 overflow-x-hidden">
@@ -70,7 +50,7 @@ const Cart = () => {
           {cartItems.length > 0 ? (
             <div className="flex flex-col gap-4">
               {cartItems.map((item) => (
-                <CartItem key={item.id} {...item} />
+                <CartItem key={item.id} item={item} onRemove={removeFromCart} />
               ))}
             </div>
           ) : (

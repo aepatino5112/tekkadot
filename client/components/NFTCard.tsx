@@ -1,16 +1,41 @@
+"use client";
+
 import { type NFTProps } from "@/types/cards";
 import { MessageCircle, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useCartContext } from "@/context/CartContext";
+import { useWalletContext } from "@/context/WalletContext";
+import { toast } from "react-hot-toast";
 
-const NFTCard = ({
-  id,
-  name,
-  price,
-  rareness,
-  category,
-  imageUrl,
-}: NFTProps) => {
+const NFTCard = (props: NFTProps) => {
+  const { id, name, price, rareness, category, imageUrl } = props;
+  const router = useRouter();
+  const { addToCart } = useCartContext();
+  const { isConnected } = useWalletContext();
+
+  const handleMessageClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isConnected) {
+      toast.error("Please connect your wallet to send a message.");
+      return;
+    }
+    router.push("/profile?section=Messages");
+  };
+
+  const handleAddToCartClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isConnected) {
+      toast.error("Please connect your wallet to add items to the cart.");
+      return;
+    }
+    // Pass the full props object, now including the 'type'
+    addToCart({ ...props, type: "nft" });
+  };
+
   return (
     <Link href={`/details/nft/${id}`} className="block w-full">
       <article className="flex flex-col w-full overflow-hidden">
@@ -26,12 +51,14 @@ const NFTCard = ({
           />
           <div className="absolute top-3 right-3 flex gap-3 z-10">
             <button
+              onClick={handleMessageClick}
               aria-label="Message"
               className="cursor-pointer rounded-lg p-2 border-2 border-lime-green-600 dark:border-lime-green-400 bg-transparent"
             >
               <MessageCircle className="w-5 h-5 sm:w-6 sm:h-6 text-lime-green-600 dark:text-lime-green-400" />
             </button>
             <button
+              onClick={handleAddToCartClick}
               aria-label="Add to cart"
               className="cursor-pointer rounded-lg p-2 border-2 border-lime-green-600 dark:border-lime-green-400 bg-lime-green-600 dark:bg-lime-green-400"
             >

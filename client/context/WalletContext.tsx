@@ -2,16 +2,17 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { ApiPromise, WsProvider } from "@polkadot/api";
-import {
-  web3Accounts,
-  web3Enable,
-  web3FromAddress,
-} from "@polkadot/extension-dapp";
+// web3FromAddress is no longer needed
 import type {
   InjectedAccount,
   InjectedAccountWithMeta,
 } from "@polkadot/extension-inject/types";
-import { getCurrentUser } from "@/lib/api";
+import {
+  getCurrentUser,
+  issueNonce,
+  connectWallet as apiConnectWallet,
+  logout as apiLogout,
+} from "@/lib/api";
 import { WalletType } from "@/types/wallet";
 
 interface WalletContextType {
@@ -74,63 +75,86 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
       const lastConnectedWallet = localStorage.getItem(
         "lastConnectedWallet"
       ) as WalletType | null;
-      if (lastConnectedWallet) {
+      // Also check for a session cookie
+      const hasSessionCookie = document.cookie.includes("session=");
+
+      if (lastConnectedWallet && !hasSessionCookie) {
         try {
-          // We wrap this in a try-catch block to handle cases where the user
-          // might have uninstalled the extension since their last visit.
-          await connectWallet(lastConnectedWallet);
+          await connectWallet(lastConnectedWallet, true); // Pass true to indicate auto-connect
         } catch (error) {
           console.error("Auto-connect failed:", error);
-          // If auto-connect fails, clear the stored preference
           localStorage.removeItem("lastConnectedWallet");
         }
+      } else if (hasSessionCookie) {
+        // If there's a cookie, verify the session with the server
+        await checkSession();
       }
     };
 
     initApi();
-    autoConnect(); // Attempt to auto-connect on page load
-
-    // Check for existing server-side session on mount
-    checkSession();
+    autoConnect();
   }, []);
 
-  const connectWallet = async (walletName: WalletType) => {
+  const connectWallet = async (
+    walletName: WalletType,
+    isAutoConnect = false
+  ) => {
     if (typeof window !== "undefined") {
-      console.log("Attempting to connect to:", walletName);
       const injectedExtensions = (window as any).injectedWeb3;
-
-      // Log all available extensions to see if 'subwallet-js' is present
-      console.log("Available extensions:", Object.keys(injectedExtensions));
-
       const wallet = injectedExtensions?.[walletName];
 
       if (!wallet) {
-        console.error(`Extension with key '${walletName}' not found.`);
-        throw new Error(
-          `The ${walletName} extension is not installed. Please install it.`
-        );
+        throw new Error(`The ${walletName} extension is not installed.`);
       }
-      console.log("Wallet object found:", wallet);
 
       try {
-        // This call will trigger the authorization popup if not already approved.
-        // It returns an object with an `accounts` property.
         const injected = await wallet.enable("Tekkadot");
-        console.log("Wallet enabled. 'injected' object:", injected);
-
-        // Use get() for a one-time fetch of accounts. It's more reliable for an initial connection.
-        const accs: InjectedAccount[] = await injected.accounts.get();
-        console.log("Received accounts from get():", accs);
+        const accs: InjectedAccount[] = await injected.accounts.get({
+          anyType: true,
+        });
 
         if (!accs || accs.length === 0) {
-          // This error will be thrown if the user rejects the connection,
-          // closes the popup, or has no accounts in the wallet.
           throw new Error(
-            `Authorization failed or no accounts found in ${walletName}. Please approve the connection and ensure you have at least one account.`
+            `Authorization failed or no accounts found in ${walletName}.`
           );
         }
 
-        console.log("Accounts found, proceeding with connection.");
+        const accountToSign = accs[0]; // Use the first account for the auth flow
+
+        // Server-side authentication flow
+        // 1. Get nonce from server
+        const { nonce } = await issueNonce(accountToSign.address, walletName);
+
+        // 2. Get the signer directly from the 'injected' object.
+        // This avoids the need for web3Enable and web3FromAddress.
+        const injector = injected;
+        if (!injector.signer.signRaw) {
+          throw new Error(
+            "The selected wallet does not support signing raw messages."
+          );
+        }
+
+        // 3. Sign the nonce
+        const { signature } = await injector.signer.signRaw({
+          address: accountToSign.address,
+          data: nonce,
+          type: "bytes",
+        });
+
+        // 4. Send signature to server for verification and login
+        // Map the wallet name to the exact ENUM value the database expects.
+        let dbWalletType: "talisman" | "polkadotjs" | "subwallet";
+        if (walletName === "subwallet-js") {
+          dbWalletType = "subwallet";
+        } else {
+          dbWalletType = walletName.replace("-", "") as
+            | "talisman"
+            | "polkadotjs";
+        }
+
+        await apiConnectWallet(accountToSign.address, dbWalletType, signature);
+
+        // If all successful, update UI state
         const accountsWithMeta = accs.map((a) => ({
           address: a.address,
           type: a.type,
@@ -144,9 +168,12 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
         setAccounts(accountsWithMeta);
         setSelectedAccount(accountsWithMeta[0]);
         setIsConnected(true);
-        // On successful connection, save the wallet name to localStorage
         localStorage.setItem("lastConnectedWallet", walletName);
       } catch (error) {
+        // If auto-connect fails silently, don't show an error toast to the user
+        if (isAutoConnect) {
+          throw error; // Just throw to be caught by the caller
+        }
         console.error("Wallet connection failed:", error);
         const message =
           error instanceof Error
@@ -159,16 +186,17 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const disconnectWallet = () => {
-    setAccounts([]);
-    setSelectedAccount(null);
-    setIsConnected(false);
-    // On disconnect, remove the wallet preference from localStorage
-    localStorage.removeItem("lastConnectedWallet");
-    // Optionally call server to invalidate session
-    if (typeof window !== "undefined") {
-      document.cookie =
-        "authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  const disconnectWallet = async () => {
+    try {
+      await apiLogout(); // Call server to clear the session cookie
+    } catch (error) {
+      console.error("Server logout failed:", error);
+    } finally {
+      // Always clear client-side state
+      setAccounts([]);
+      setSelectedAccount(null);
+      setIsConnected(false);
+      localStorage.removeItem("lastConnectedWallet");
     }
   };
 

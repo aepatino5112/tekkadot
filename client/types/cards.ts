@@ -22,23 +22,24 @@ export interface NFT {
 }
 
 // Type for props in Products Cards
-export type ProductProps = {
-    id: number,
-    name: string,
-    price: number,
-    trustIndex: number,
-    imageUrl: string;
-    collection?: string;
+export interface ProductProps {
+  type: "product"; // Add type discriminator
+  id: string;
+  name: string;
+  price: number;
+  imageUrl: string;
+  collection : string;
 }
 
 // Type for props in NFTs Cards
-export type NFTProps = {
-    id: number,
-    name: string,
-    price: number,
-    rareness: string,
-    category: string,
-    imageUrl: string
+export interface NFTProps {
+  type: "nft"; // Add type discriminator
+  id:string;
+  name: string;
+  price: number;
+  rareness: string;
+  category: string;
+  imageUrl: string;
 }
 
 // Type for featured products props

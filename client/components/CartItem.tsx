@@ -1,29 +1,21 @@
 import React from "react";
 import Image from "next/image";
 import { Trash2 } from "lucide-react";
+import { CartItem as CartItemType } from "@/context/CartContext"; // Import the correct type
 
-type CartItemProps = {
-  id: string;
-  name: string;
-  price: number;
-  tags: string[];
-  type: "product" | "nft";
-  imageUrl: string;
-  onRemove: () => void;
-};
+interface CartItemProps {
+  item: CartItemType;
+  onRemove: (id: string) => void;
+}
 
-const CartItem: React.FC<CartItemProps> = ({
-  id,
-  name,
-  price,
-  tags,
-  type,
-  imageUrl,
-  onRemove,
-}) => {
+const CartItem: React.FC<CartItemProps> = ({ item, onRemove }) => {
+  const { id, name, price, imageUrl, type } = item;
+
   const isNFT = type === "nft";
   const priceColor = isNFT ? "text-lime-green-500" : "text-vivid-pink-500";
-  const tagColor = isNFT ? "bg-lime-green-200 text-lime-green-700" : "bg-vivid-pink-200 text-vivid-pink-700";
+  const tagColor = isNFT
+    ? "bg-lime-green-200 text-lime-green-700"
+    : "bg-vivid-pink-200 text-vivid-pink-700";
   const trashColor = isNFT ? "text-lime-green-700" : "text-vivid-pink-700";
 
   return (
@@ -40,16 +32,20 @@ const CartItem: React.FC<CartItemProps> = ({
           {name}
         </h3>
 
-        {/* Tags */}
-        <div className="flex gap-2 mt-1">
-          {tags.map((tag, index) => (
-            <span
-              key={index}
-              className={`px-2 py-1 text-sm rounded-lg ${tagColor}`}
-            >
-              {tag}
-            </span>
-          ))}
+        {/* Tags - Conditional Rendering */}
+        <div className="flex flex-wrap gap-2 mt-1">
+          {type === "nft" && (
+            <>
+              <span className={`px-2 py-1 text-xs rounded-lg ${tagColor}`}>
+                {item.rareness}
+              </span>
+              <span
+                className={`px-2 py-1 text-xs rounded-lg bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200`}
+              >
+                {item.category}
+              </span>
+            </>
+          )}
         </div>
 
         {/* Price */}
@@ -60,7 +56,7 @@ const CartItem: React.FC<CartItemProps> = ({
 
       {/* Remove Button */}
       <button
-        onClick={onRemove}
+        onClick={() => onRemove(id)}
         className={`p-2 rounded-full cursor-pointer transition-all ${trashColor}`}
         aria-label="Remove item"
       >

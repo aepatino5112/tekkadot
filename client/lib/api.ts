@@ -35,6 +35,18 @@ export async function connectWallet(wallet_address: string, wallet_type: string,
   }>;
 }
 
+export async function logout() {
+  const res = await fetch(`${API_BASE}/api/auth/logout`, {
+    method: "POST",
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(err || "Failed to log out");
+  }
+}
+
 export async function fetchSession() {
   const res = await fetch(`${API_BASE}/api/auth/session`, { method: "GET", credentials: 'include' });
   if (!res.ok) throw new Error("Failed to fetch session");

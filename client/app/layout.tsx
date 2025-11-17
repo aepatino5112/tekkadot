@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import { Toaster } from 'react-hot-toast';
-import WalletClientWrapper from "@/components/WalletClientWrapper";
 import "./globals.css";
+import { WalletProvider } from "@/context/WalletContext";
+import { CartProvider } from "@/context/CartContext";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -41,11 +42,24 @@ export default function RootLayout({
             `,
           }}
         />
-        <WalletClientWrapper>
-          <main className="grow">{children}</main>
-          <Toaster position="top-right" />
-        </WalletClientWrapper>
+        <WalletProvider>
+          <CartProvider>
+            <Toaster
+              position="top-center"
+              reverseOrder={false}
+              toastOptions={{
+                duration: 3000,
+                style: {
+                  background: "#333",
+                  color: "#fff",
+                },
+              }}
+            />
+            {children}
+          </CartProvider>
+        </WalletProvider>
       </body>
     </html>
   );
 }
+
