@@ -1,5 +1,6 @@
 // src/routes/nftRoutes.ts
 import { Router } from 'express';
+import { upload } from '../utils/upload.js';
 import {
     createNFT,
     updateNFT,
@@ -10,10 +11,11 @@ import {
 
 const router: Router = Router();
 
-router.post('/', createNFT);
-router.put('/:id', updateNFT);
+router.post('/', upload.single('image'), createNFT);
+router.put('/:id', upload.single('image'), updateNFT);
 router.delete('/:id', deleteNFT);
 router.get('/', searchNFTs);
 router.get('/user', getUserNFTs);
 
 export default router;
+
