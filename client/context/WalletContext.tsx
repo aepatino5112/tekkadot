@@ -9,13 +9,14 @@ import {
 } from "@polkadot/extension-dapp";
 import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
 import { getCurrentUser } from "@/lib/api";
+import { WalletType } from "@/types/wallet";
 
 interface WalletContextType {
   api: ApiPromise | null;
   accounts: InjectedAccountWithMeta[];
   selectedAccount: InjectedAccountWithMeta | null;
   isConnected: boolean;
-  connectWallet: () => Promise<void>;
+  connectWallet: (walletName: WalletType) => Promise<void>;
   disconnectWallet: () => void;
   selectAccount: (account: InjectedAccountWithMeta) => void;
 }
@@ -70,23 +71,50 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
     checkSession();
   }, []);
 
-  const connectWallet = async () => {
+  const connectWallet = async (walletName: WalletType) => {
     if (typeof window !== "undefined") {
+      // Access the injected extensions from the window object
+      const injectedExtensions = (window as any).injectedWeb3;
+
+      if (!injectedExtensions || !injectedExtensions[walletName]) {
+        throw new Error(
+          `${walletName} extension not found. Please install it.`
+        );
+      }
+
       try {
-        const extensions = await web3Enable("Tekkadot");
-        if (extensions.length === 0) {
-          alert("No Polkadot extension found!");
-          return;
+        // Enable only the selected wallet
+        const wallet = injectedExtensions[walletName];
+        const extension = await wallet.enable("Tekkadot");
+
+        const accounts = await extension.accounts.get();
+
+        if (accounts.length === 0) {
+          throw new Error(
+            `No accounts found for ${walletName}. Please create an account in the extension.`
+          );
         }
+
+        // The accounts from extension.accounts.get() don't have the 'meta' property.
+        // We need to call web3Accounts() to get the full account details including 'meta.source'.
         const allAccounts = await web3Accounts();
-        setAccounts(allAccounts);
+        const selectedWalletAccounts = allAccounts.filter(
+          (account) => account.meta.source === walletName
+        );
+
+        setAccounts(selectedWalletAccounts);
+        if (selectedWalletAccounts.length > 0) {
+          setSelectedAccount(selectedWalletAccounts[0]);
+        }
         setIsConnected(true);
-        // Proceed with auth flow (see server-side changes below)
       } catch (error) {
         console.error("Wallet connection failed:", error);
+        const message =
+          error instanceof Error ? error.message : "Connection rejected.";
+        throw new Error(message);
       }
     } else {
-      console.error("Cannot connect wallet: window is not defined");
+      throw new Error("Cannot connect wallet in a server environment.");
     }
   };
 

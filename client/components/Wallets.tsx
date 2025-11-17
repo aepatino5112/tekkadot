@@ -12,11 +12,11 @@ interface WalletsProps {
 const Wallets = ({ onClose }: WalletsProps) => {
   const { connectWallet: connect } = useWalletContext();
 
-  const handleConnect = async () => {
+  const handleConnect = async (walletName: WalletType) => {
     try {
-      await connect();
+      await connect(walletName);
       onClose();
-      toast.success("Wallet connected");
+      toast.success(`${walletName} connected successfully!`);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Unknown error";
       toast.error(message);
@@ -59,9 +59,18 @@ const Wallets = ({ onClose }: WalletsProps) => {
               </div>
             </div>
             <div className="flex flex-col justify-between items-center gap-6">
-              <WalletOption name="Talisman" onClick={handleConnect} />
-              <WalletOption name="SubWallet" onClick={handleConnect} />
-              <WalletOption name="Polkadot.Js" onClick={handleConnect} />
+              <WalletOption
+                name="Talisman"
+                onClick={() => handleConnect("talisman")}
+              />
+              <WalletOption
+                name="SubWallet"
+                onClick={() => handleConnect("subwallet")}
+              />
+              <WalletOption
+                name="Polkadot.Js"
+                onClick={() => handleConnect("polkadot-js")}
+              />
             </div>
             <div>
               <p className="text-200 text-black-500 leading-300 pt-12 dark:text-white-500">
