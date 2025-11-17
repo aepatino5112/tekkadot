@@ -3,7 +3,7 @@ import type { Request, Response } from 'express';
 import { resolveUserId } from '../services/walletService.js';
 import * as nftService from '../services/nftService.js';
 import { uploadImageToIPFS } from '../services/ipfsService.js';
-import type { Category, Rareness, NFTCreate, NFTUpdate } from '../types/enums.js';
+import type { Category, Rareness, NFTCreate, NFTUpdate, SortKey } from '../types/enums.js';
 
 function narrowCategory(v: unknown): Category | undefined {
     if (v === 'art' || v === 'collectible' || v === 'music' || v === 'fresh' || v === 'cyberpunk') return v;
@@ -130,6 +130,18 @@ export async function getUserNFTs(req: Request, res: Response) {
         const userId = await resolveUserId(walletParams);
         const nfts = await nftService.getNFTsByUser(userId);
         res.json({ items: nfts });
+    } catch (err: unknown) {
+        res.status(getStatus()).json({ error: getMessage(err) });
+    }
+}
+
+export async function searchNFTs(req: Request, res: Response) {
+    try {
+        const page = Number(req.query?.page) || 1;
+        const sortQuery = req.query?.sort as string;
+        const sort: SortKey | undefined = (sortQuery === 'h-price' || sortQuery === 'l-price' || sortQuery === 'newest' || sortQuery === 'oldest') ? sortQuery : undefined;
+        const result = await nftService.searchNFTs({ page, sort });
+        res.json(result);
     } catch (err: unknown) {
         res.status(getStatus()).json({ error: getMessage(err) });
     }

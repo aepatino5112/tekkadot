@@ -64,9 +64,15 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
     // Initialize Polkadot API
     const initApi = async () => {
       if (typeof window !== "undefined") {
-        const provider = new WsProvider("wss://rpc.polkadot.io"); // Or your endpoint
-        const apiInstance = await ApiPromise.create({ provider });
-        setApi(apiInstance);
+        try {
+          const provider = new WsProvider("wss://polkadot-rpc.dwellir.com");
+          const apiInstance = await ApiPromise.create({ provider });
+          setApi(apiInstance);
+        } catch (error) {
+          console.error("Failed to initialize Polkadot API:", error);
+          // Set api to null to indicate failure
+          setApi(null);
+        }
       }
     };
 

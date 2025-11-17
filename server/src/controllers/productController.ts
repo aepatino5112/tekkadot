@@ -3,7 +3,7 @@ import type { Request, Response } from 'express';
 import { resolveUserId } from '../services/walletService.js';
 import * as productService from '../services/productService.js';
 import { uploadImageToIPFS } from '../services/ipfsService.js';
-import type { Collection, ProductCreate, ProductUpdate } from '../types/enums.js';
+import type { Collection, ProductCreate, ProductUpdate, SortKey } from '../types/enums.js';
 
 // helpers de narrow
 function narrowCollection(v: unknown): Collection | undefined {
@@ -123,6 +123,21 @@ export async function getUserProducts(req: Request, res: Response) {
         const userId = await resolveUserId(walletParams);
         const products = await productService.getProductsByUser(userId);
         res.json({ items: products });
+    } catch (err: unknown) {
+        res.status(getStatus()).json({ error: getMessage(err) });
+    }
+}
+
+export async function searchProducts(req: Request, res: Response) {
+    try {
+        console.log('searchProducts called');
+        const page = Number(req.query?.page) || 1;
+        const sortQuery = req.query?.sort as string;
+        const sort: SortKey | undefined = (sortQuery === 'h-price' || sortQuery === 'l-price' || sortQuery === 'newest' || sortQuery === 'oldest') ? sortQuery : undefined;
+        const collectionQuery = req.query?.collection as string;
+        const collection: Collection | undefined = narrowCollection(collectionQuery);
+        const result = await productService.searchProducts({ page, sort, collection });
+        res.json(result);
     } catch (err: unknown) {
         res.status(getStatus()).json({ error: getMessage(err) });
     }

@@ -99,9 +99,9 @@ export class AuthController {
 
             const decoded = verifyToken(token);
             const user = await AuthService.getUserById(decoded.userId); // Assuming uid is user_id
-            res.status(200).json({ user });
+            return res.status(200).json({ user });
         } catch (error) {
-            res.status(401).json({ error: 'Invalid token' });
+            return res.status(401).json({ error: 'Invalid token' });
         }
     }
 }
