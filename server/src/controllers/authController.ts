@@ -1,6 +1,7 @@
 // src/controllers/authController.ts
 import type { Request, Response } from 'express';
 import { AuthService } from '../services/authService.js';
+import { verifyToken } from '../utils/jwt.js';
 
 const COOKIE_NAME = 'session';
 
@@ -53,6 +54,55 @@ export class AuthController {
     static async logout(_: Request, res: Response) {
         res.clearCookie(COOKIE_NAME, { path: '/' });
         res.status(204).end();
+    }
+
+    static async connectWallet(req: Request, res: Response) {
+        try {
+            const { address, signature } = req.body;
+
+            // Assume message is the nonce, but since the class uses signature for nonce, perhaps signature is for nonce.
+            // Adjust based on client sending signature for nonce.
+
+            // Check for existing JWT in cookies
+            const token = req.cookies.authToken;
+            let userId: string | null = null;
+
+            if (token) {
+                try {
+                    const decoded = verifyToken(token);
+                    userId = decoded.userId; // Assuming uid is user_id
+                } catch (error) {
+                    // Invalid token, proceed as new user
+                }
+            }
+
+            if (userId) {
+                // Link wallet to existing user
+                const result = await AuthService.linkWallet(userId, address, 'polkadotjs', signature); // Assume wallet_type
+                res.status(200).json({ message: 'Wallet linked successfully', wallet_id: result.wallet_id });
+            } else {
+                // Create new user
+                const result = await AuthService.verifyAndLogin(address, 'polkadotjs', signature);
+                res.cookie('authToken', result.token, { httpOnly: true, secure: true });
+                res.status(200).json({ message: 'Wallet connected successfully', user_id: result.user_id, wallet_id: result.wallet_id });
+            }
+        } catch (error) {
+            res.status(500).json({ error: (error as Error).message });
+        }
+    }
+
+    // New endpoint to get current user (for session check)
+    static async getCurrentUser(req: Request, res: Response) {
+        try {
+            const token = req.cookies.authToken;
+            if (!token) return res.status(401).json({ error: 'No token' });
+
+            const decoded = verifyToken(token);
+            const user = await AuthService.getUserById(decoded.userId); // Assuming uid is user_id
+            res.status(200).json({ user });
+        } catch (error) {
+            res.status(401).json({ error: 'Invalid token' });
+        }
     }
 }
 

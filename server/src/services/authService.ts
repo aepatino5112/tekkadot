@@ -40,7 +40,7 @@ export class AuthService {
             user_id = existingWallets[0].user_id;
             wallet_id = existingWallets[0].wallet_id;
         } else {
-        // Create new user
+            // Create new user
             const { data: userData, error: userErr } = await supabase
                 .from('users')
                 .insert({})
@@ -90,7 +90,6 @@ export class AuthService {
             return { wallet_id: wallet.wallet_id };
         }
 
-
         const { data: walletData, error: walletInsertErr } = await supabase
             .from('wallets')
             .insert({ user_id: current_user_id, wallet_type, wallet_address })
@@ -99,5 +98,18 @@ export class AuthService {
         if (walletInsertErr || !walletData) throw new Error('Wallet insert failed');
 
         return { wallet_id: walletData.wallet_id };
+    }
+
+    static async getUserById(userId: string) {
+        const { data: user, error } = await supabase
+            .from("users")
+            .select(`
+              user_id,
+              wallets (wallet_address, wallet_type)
+            `)
+            .eq("user_id", userId)
+            .single();
+        if (error) throw new Error("User not found");
+        return user;
     }
 }

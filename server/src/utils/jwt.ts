@@ -18,3 +18,11 @@ export function signJwt(payload: JwtPayload, opts?: SignOptions) {
 export function verifyJwt(token: string) {
     return jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
 }
+
+export const generateToken = (payload: { userId: string; wallets: string[] }) => {
+  return jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: "7d" });
+};
+
+export const verifyToken = (token: string) => {
+  return jwt.verify(token, process.env.JWT_SECRET!) as { userId: string; wallets: string[] };
+};
