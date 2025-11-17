@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { WalletProvider } from "@/components/WalletProvider";
 
 export const metadata: Metadata = {
   title: "TekkaDot - The Decentralized Marketplace for Tech & NFTs",
@@ -15,11 +14,9 @@ export default function MissionLayout({
 }>) {
   return (
     <section>
-      <WalletProvider>
         <Navbar variant="nfts"/>
           <main className="grow">{children}</main>
         <Footer variant="nfts" />
-      </WalletProvider>
     </section>
   );
 }

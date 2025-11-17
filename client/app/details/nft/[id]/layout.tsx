@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { WalletProvider } from "@/components/WalletProvider";
 
 export const metadata: Metadata = {
   title: "TekkaDot - Details",
@@ -16,11 +15,9 @@ export default function DetailsNFTLayout({
 }>) {
   return (
     <section className="nft-background min-h-screen flex flex-col">
-        <WalletProvider>
           <Navbar variant="nfts"/>
           <main className="grow">{children}</main>
           <Footer variant="nfts"/>
-        </WalletProvider>
     </section>
   );
 }
