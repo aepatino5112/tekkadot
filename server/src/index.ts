@@ -6,6 +6,9 @@ import { logger } from './config/logger.js';
 import authRoutes from './routes/authRoutes.js';
 import nftRoutes from './routes/nftRoutes.js';
 import productRoutes from './routes/productRoutes.js';
+import cartRoutes from './routes/cartRoutes.js';
+import cartItemRoutes from './routes/cartItemsRoutes.js';
+import ordersRoutes from './routes/orderRoutes.js';
 
 // Express server instance
 const app = express();
@@ -39,6 +42,9 @@ app.get('/api/health', (_: Request, res: Response) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/nfts', nftRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/cartItems', cartItemRoutes);
+app.use('/api/orders', ordersRoutes);
 
 // Server listens
 app.listen(PORT, () => {
