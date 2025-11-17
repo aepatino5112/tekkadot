@@ -142,28 +142,48 @@ const Navbar = ({
 
         <div className="links hidden md:flex gap-6 items-center text-sm md:text-base lg:text-lg">
           <Link href="/">
-            {pathname === '/' ? (
+            {pathname === "/" ? (
               <GradientText
-              colors={["#ff2670", "#87de3c", "#ff2670", "#87de3c"]}
-              animationSpeed={6}
-              showBorder={false}
-              className="custom-class"
-            >
-              Home
-            </GradientText>
+                colors={["#ff2670", "#87de3c", "#ff2670", "#87de3c"]}
+                animationSpeed={6}
+                showBorder={false}
+                className="custom-class"
+              >
+                Home
+              </GradientText>
             ) : (
               <p>Home</p>
             )}
           </Link>
-          <Link href="/products" className={pathname.startsWith('/products') ? 'text-vivid-pink-500' : ''}>Products</Link>
-          <Link href="/nfts" className={pathname.startsWith('/nfts') ? 'text-lime-green-500' : ''}>NFTs</Link>
-          <Link href="/about-us" className={pathname === '/about-us' ? 'text-vivid-pink-500' : ''}>About Us</Link>
+          <Link
+            href="/products"
+            className={
+              pathname.startsWith("/products") ? "text-vivid-pink-500" : ""
+            }
+          >
+            Products
+          </Link>
+          <Link
+            href="/nfts"
+            className={
+              pathname.startsWith("/nfts") ? "text-lime-green-500" : ""
+            }
+          >
+            NFTs
+          </Link>
+          <Link
+            href="/about-us"
+            className={pathname === "/about-us" ? "text-vivid-pink-500" : ""}
+          >
+            About Us
+          </Link>
         </div>
 
         <div className="connect-btn flex items-center gap-3">
           {/* Keep search and theme toggle on the navbar when burger is closed */}
           {!isMobileMenuOpen && (
             <>
+              {/* Search button - non-functional placeholder 
               <button
                 className="cursor-pointer p-2"
                 onClick={() => true}
@@ -171,6 +191,7 @@ const Navbar = ({
               >
                 <Search className="w-[2.3125rem] h-[2.3125rem] text-black-500 dark:text-white-500" />
               </button>
+              */}
 
               <button
                 onClick={() => setDarkTheme(!darkTheme)}
