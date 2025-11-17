@@ -1,105 +1,131 @@
-'use client';
+"use client";
 
-import { createContext, useContext, useState, useCallback } from 'react';
-import type { ConnectedWallet, SessionUser, WalletType } from '@/types/wallet';
-import { connectFirstAccount, signNonce } from '@/components/client/polkadot';
-import { issueNonce, connectWallet, fetchSession } from '@/lib/api';
-import { useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { ApiPromise, WsProvider } from "@polkadot/api";
+import {
+  web3Accounts,
+  web3Enable,
+  web3FromAddress,
+} from "@polkadot/extension-dapp";
+import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
+import { getCurrentUser } from "@/lib/api";
 
-type WalletContextType = {
-  connected: ConnectedWallet | null;
-  user: SessionUser | null;
-  loading: boolean;
-  error: string | null;
-  connect: (walletType?: WalletType) => Promise<void>;
-  disconnect: () => void;
-};
+interface WalletContextType {
+  api: ApiPromise | null;
+  accounts: InjectedAccountWithMeta[];
+  selectedAccount: InjectedAccountWithMeta | null;
+  isConnected: boolean;
+  connectWallet: () => Promise<void>;
+  disconnectWallet: () => void;
+  selectAccount: (account: InjectedAccountWithMeta) => void;
+}
 
-const WalletContext = createContext<WalletContextType | null>(null);
+const WalletContext = createContext<WalletContextType | undefined>(undefined);
 
-export function WalletProvider({ children }: { children: React.ReactNode }) {
-  const [connected, setConnected] = useState<ConnectedWallet | null>(null);
-  const [user, setUser] = useState<SessionUser | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [api, setApi] = useState<ApiPromise | null>(null);
+  const [accounts, setAccounts] = useState<InjectedAccountWithMeta[]>([]);
+  const [selectedAccount, setSelectedAccount] =
+    useState<InjectedAccountWithMeta | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
 
-  // ✅ Hydrate session on mount
-  useEffect(() => {
-    (async () => {
-      try {
-        const { user } = await fetchSession();
-        setUser({
-          user_id: user.user_id,
-          wallet_id: user.wallet_id,
-          wallet_address: user.wallet_address,
-          wallet_type: user.wallet_type as WalletType,
-        });
-        setConnected({
-          address: user.wallet_address,
-          walletType: user.wallet_type as WalletType,
-          source: 'session',
-        });
-      } catch {
-        // no valid session, leave user null
+  // Function to check for JWT cookie and persist session
+  const checkSession = async () => {
+    if (typeof window !== "undefined") {
+      const cookies = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("authToken="));
+      if (cookies) {
+        try {
+          // Fetch user data from server to confirm session
+          const response = await getCurrentUser();
+          if (response.user) {
+            setIsConnected(true);
+            // Optionally set selectedAccount if the server returns wallet info
+            // setSelectedAccount(response.user.wallets[0]); // Adjust based on your user model
+          }
+        } catch (error) {
+          console.error("Session check failed:", error);
+          // If invalid, clear state
+          setIsConnected(false);
+        }
       }
-    })();
-  }, []);
-
-
-  const connect = useCallback(async (preferred?: WalletType) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const cw = await connectFirstAccount(preferred);
-      setConnected(cw);
-
-      // Send both wallet_address and wallet_type
-      const { nonce } = await issueNonce(cw.address, cw.walletType);
-      console.log("Issued nonce:", nonce);
-
-      const signature = await signNonce(cw.address, nonce, cw.source);
-      console.log("Signature:", signature);
-
-      // ✅ STEP 3: Log the payload before calling verify
-      console.log("Verifying with:", {
-        wallet_address: cw.address,
-        wallet_type: cw.walletType,
-        signature
-      });
-
-
-      const { user_id, wallet_id } = await connectWallet(cw.address, cw.walletType, signature);
-
-      setUser({
-        user_id,
-        wallet_id,
-        wallet_address: cw.address,
-        wallet_type: cw.walletType
-      });
-
-    } catch (e: unknown) {
-      const message = e instanceof Error ? e.message : 'Unknown error';
-      setError(message);
-      throw e; // allow modal to toast.error
-    } finally {
-      setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    // Initialize Polkadot API
+    const initApi = async () => {
+      if (typeof window !== "undefined") {
+        const provider = new WsProvider("wss://rpc.polkadot.io"); // Or your endpoint
+        const apiInstance = await ApiPromise.create({ provider });
+        setApi(apiInstance);
+      }
+    };
+    initApi();
+
+    // Check for existing session on mount
+    checkSession();
   }, []);
 
-  const disconnect = useCallback(() => {
-    setConnected(null);
-    setUser(null);
-  }, []);
+  const connectWallet = async () => {
+    if (typeof window !== "undefined") {
+      try {
+        const extensions = await web3Enable("Tekkadot");
+        if (extensions.length === 0) {
+          alert("No Polkadot extension found!");
+          return;
+        }
+        const allAccounts = await web3Accounts();
+        setAccounts(allAccounts);
+        setIsConnected(true);
+        // Proceed with auth flow (see server-side changes below)
+      } catch (error) {
+        console.error("Wallet connection failed:", error);
+      }
+    } else {
+      console.error("Cannot connect wallet: window is not defined");
+    }
+  };
+
+  const disconnectWallet = () => {
+    setAccounts([]);
+    setSelectedAccount(null);
+    setIsConnected(false);
+    // Optionally call server to invalidate session
+    if (typeof window !== "undefined") {
+      document.cookie =
+        "authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    }
+  };
+
+  const selectAccount = (account: InjectedAccountWithMeta) => {
+    setSelectedAccount(account);
+  };
 
   return (
-    <WalletContext.Provider value={{ connected, user, loading, error, connect, disconnect }}>
+    <WalletContext.Provider
+      value={{
+        api,
+        accounts,
+        selectedAccount,
+        isConnected,
+        connectWallet,
+        disconnectWallet,
+        selectAccount,
+      }}
+    >
       {children}
     </WalletContext.Provider>
   );
-}
+};
 
-export function useWalletContext() {
-  const ctx = useContext(WalletContext);
-  if (!ctx) throw new Error('useWalletContext must be used inside WalletProvider');
-  return ctx;
-}
+export const useWalletContext = (): WalletContextType => {
+  const context = useContext(WalletContext);
+  if (!context) {
+    throw new Error("useWalletContext must be used within a WalletProvider");
+  }
+  return context;
+};

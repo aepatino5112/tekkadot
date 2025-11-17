@@ -35,7 +35,6 @@ export async function connectWallet(wallet_address: string, wallet_type: string,
   }>;
 }
 
-
 export async function fetchSession() {
   const res = await fetch(`${API_BASE}/api/auth/session`, { method: "GET", credentials: 'include' });
   if (!res.ok) throw new Error("Failed to fetch session");
@@ -44,5 +43,11 @@ export async function fetchSession() {
     wallet_id: string;
     wallet_address: string;
     wallet_type: string;
-  }}>;
+  }; }>;};
+  
+// Assuming you have an axios instance or fetch wrapper
+export async function getCurrentUser() {
+  const res = await fetch(`${API_BASE}/api/auth/me`, { method: "GET", credentials: 'include' });
+  if (!res.ok) throw new Error("Failed to fetch current user");
+  return res.json() as Promise<{ user: any }>;
 }

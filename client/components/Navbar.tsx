@@ -121,7 +121,8 @@ const Navbar = ({
     color: brandColor ?? brands[variant].color,
   };
 
-  const { user, connect, disconnect } = useWalletContext();
+  const { selectedAccount: user, disconnectWallet: disconnect } =
+    useWalletContext();
 
   return (
     <header>
@@ -145,22 +146,41 @@ const Navbar = ({
 
         <div className="links hidden md:flex gap-6 items-center text-sm md:text-base lg:text-lg">
           <Link href="/">
-            {pathname === '/' ? (
+            {pathname === "/" ? (
               <GradientText
-              colors={["#ff2670", "#87de3c", "#ff2670", "#87de3c"]}
-              animationSpeed={6}
-              showBorder={false}
-              className="custom-class"
-            >
-              Home
-            </GradientText>
+                colors={["#ff2670", "#87de3c", "#ff2670", "#87de3c"]}
+                animationSpeed={6}
+                showBorder={false}
+                className="custom-class"
+              >
+                Home
+              </GradientText>
             ) : (
               <p>Home</p>
             )}
           </Link>
-          <Link href="/products" className={pathname.startsWith('/products') ? 'text-vivid-pink-500' : ''}>Products</Link>
-          <Link href="/nfts" className={pathname.startsWith('/nfts') ? 'text-lime-green-500' : ''}>NFTs</Link>
-          <Link href="/about-us" className={pathname === '/about-us' ? 'text-vivid-pink-500' : ''}>About Us</Link>
+          <Link
+            href="/products"
+            className={
+              pathname.startsWith("/products") ? "text-vivid-pink-500" : ""
+            }
+          >
+            Products
+          </Link>
+          <Link
+            href="/nfts"
+            className={
+              pathname.startsWith("/nfts") ? "text-lime-green-500" : ""
+            }
+          >
+            NFTs
+          </Link>
+          <Link
+            href="/about-us"
+            className={pathname === "/about-us" ? "text-vivid-pink-500" : ""}
+          >
+            About Us
+          </Link>
         </div>
 
         <div className="connect-btn flex items-center gap-3">
@@ -204,7 +224,8 @@ const Navbar = ({
               {user ? (
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-black-500 dark:text-white-500">
-                    {user.wallet_address.slice(0, 6)}...{user.wallet_address.slice(-4)}
+                    {user.address.slice(0, 6)}...
+                    {user.address.slice(-4)}
                   </span>
                   <button
                     onClick={disconnect}
