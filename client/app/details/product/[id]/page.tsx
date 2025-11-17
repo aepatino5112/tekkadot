@@ -1,77 +1,30 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import Gallery from "@/components/Gallery";
 import QuantitySelector from "@/components/QuantitySelector";
 import Button from "@/components/Button";
 import ProductCard from "@/components/ProductCard";
+import { getProduct, searchProducts } from "@/lib/api";
+import { ProductProps } from "@/types/cards";
 
-// Simulated database call
+// Fetch product data from API
 const fetchProductData = async (id: string) => {
-  // Simulated product data
-  const product = {
-    id,
-    name: "PlayStation 5",
-    price: 202.5,
-    status: "available",
-    description:
-      "The PlayStation 5, released by Sony in 2020, is a ninth-generation gaming console known for its futuristic design and powerful, custom-built hardware.",
-    images: [
-      "/images/playstation5.jpg",
-      "/images/playstation5-2.jpg",
-      "/images/playstation5-3.jpg",
-    ],
-  };
-
-  // Simulated similar products data
-  const similarProducts = [
-    {
-      id: "2",
-      name: "Xbox Series X",
-      price: 250.2,
-      trustIndex: 85,
-      imageUrl: "/images/xbox.jpg",
-    },
-    {
-      id: "3",
-      name: "Nintendo Switch",
-      price: 300.8,
-      trustIndex: 78,
-      imageUrl: "/images/switch.jpg",
-    },
-    {
-      id: "4",
-      name: "iPhone 17",
-      price: 632.5,
-      trustIndex: 82,
-      imageUrl: "/images/iphone.jpg",
-    },
-    {
-      id: "5",
-      name: "Samsung Galaxy S23",
-      price: 500.0,
-      trustIndex: 80,
-      imageUrl: "/images/samsung.jpg",
-    },
-  ];
+  const product = await getProduct(id);
+  // Fetch similar products (first page, no specific sort/collection for now)
+  const similarProductsResponse = await searchProducts({ page: 1 });
+  const similarProducts = similarProductsResponse.items.slice(0, 4); // Take first 4 as similar
 
   return { product, similarProducts };
 };
 
-const ProductDetail = ({ params }: { params: Promise<{ id: string }> }) => {
-  const [product, setProduct] = useState<any>(null);
-  const [similarProducts, setSimilarProducts] = useState<any[]>([]);
-  const [id, setId] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchParams = async () => {
-      const resolvedParams = await params;
-      setId(resolvedParams.id);
-    };
-
-    fetchParams();
-  }, [params]);
+const ProductDetail = () => {
+  const params = useParams();
+  const [product, setProduct] = useState<ProductProps | null>(null);
+  const [similarProducts, setSimilarProducts] = useState<ProductProps[]>([]);
+  const id = (params as { id: string }).id;
 
   useEffect(() => {
     if (!id) return;
@@ -103,7 +56,7 @@ const ProductDetail = ({ params }: { params: Promise<{ id: string }> }) => {
       <div className="flex flex-col lg:flex-row gap-8 mt-6">
         {/* Product Gallery */}
         <div className="flex-1">
-          <Gallery images={product.images} type="product" />
+          <Gallery images={[product.imageUrl]} type="product" />
         </div>
 
         {/* Product Details */}
@@ -120,7 +73,7 @@ const ProductDetail = ({ params }: { params: Promise<{ id: string }> }) => {
 
           {/* Status */}
           <h5 className="font-regular text-black-300 dark:text-white-700">
-            {product.status === "available" ? "Available" : "Not Available"}
+            {product.status === "listed" ? "Available" : "Sold"}
           </h5>
 
           {/* Description */}

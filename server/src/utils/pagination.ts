@@ -1,5 +1,7 @@
 import type { SortKey } from '../types/enums.js';
 
+export type { SortKey };
+
 export const PAGE_SIZE = 16;
 
 export function getPagination(page: number) {

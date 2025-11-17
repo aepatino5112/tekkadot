@@ -138,6 +138,12 @@ export async function deleteProduct(id: string) {
   return res.json();
 }
 
+export async function getProduct(id: string) {
+  const res = await fetch(`${API_BASE}/api/products/${id}`, { credentials: 'include' });
+  if (!res.ok) throw new Error("Failed to fetch product");
+  return res.json() as Promise<ProductProps>;
+}
+
 // NFTs API functions (similar structure)
 export async function searchNFTs(params: { page?: number; sort?: 'h-price' | 'l-price' | 'newest' | 'oldest' } = {}) {
   const query = new URLSearchParams();
@@ -207,4 +213,10 @@ export async function deleteNFT(id: string) {
   });
   if (!res.ok) throw new Error("Failed to delete NFT");
   return res.json();
+}
+
+export async function getNFT(id: string) {
+  const res = await fetch(`${API_BASE}/api/nfts/${id}`, { credentials: 'include' });
+  if (!res.ok) throw new Error("Failed to fetch NFT");
+  return res.json() as Promise<NFTProps>;
 }

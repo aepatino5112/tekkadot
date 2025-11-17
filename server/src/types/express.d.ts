@@ -8,6 +8,7 @@ declare global {
         wallet_type: 'talisman' | 'polkadotjs' | 'subwallet';
       };
       tokenId?: string;
+      file?: Express.Multer.File;
     }
   }
 }

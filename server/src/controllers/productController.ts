@@ -3,18 +3,9 @@ import type { Request, Response } from 'express';
 import { resolveUserId } from '../services/walletService.js';
 import * as productService from '../services/productService.js';
 import { uploadImageToIPFS } from '../services/ipfsService.js';
-import type { Collection, ProductCreate, ProductUpdate } from '../services/productService.js';
-import type { SortKey } from '../utils/pagination.js';
+import type { Collection, ProductCreate, ProductUpdate } from '../types/enums.js';
 
 // helpers de narrow
-function narrowSort(v: unknown): SortKey | undefined {
-    if (v === 'h-price' || v === 'l-price' || v === 'newest' || v === 'oldest') return v;
-    return undefined;
-}
-function parsePage(v: unknown): number {
-    const n = Number(v);
-    return Number.isFinite(n) && n > 0 ? Math.floor(n) : 1;
-}
 function narrowCollection(v: unknown): Collection | undefined {
     if (v === 'gaming' || v === 'laptop' || v === 'mobile' || v === 'wearable') return v;
     return undefined;
@@ -65,6 +56,8 @@ export async function createProduct(req: Request, res: Response) {
 
 export async function updateProduct(req: Request, res: Response) {
     try {
+        const productId = req.params.id;
+        if (!productId) throw new Error('ID de producto requerido');
         const walletParams: { walletAddress?: string; walletId?: string } = {};
         if (typeof req.body?.walletAddress === 'string') walletParams.walletAddress = req.body.walletAddress;
         if (typeof req.body?.walletId === 'string') walletParams.walletId = req.body.walletId;
@@ -85,7 +78,7 @@ export async function updateProduct(req: Request, res: Response) {
         if (req.body?.status === 'listed' || req.body?.status === 'sold') payload.status = req.body.status;
 
         const userId = await resolveUserId(walletParams);
-        const product = await productService.updateProduct(req.params.id, userId, payload);
+        const product = await productService.updateProduct(productId, userId, payload);
         res.json(product);
     } catch (err: unknown) {
         res.status(getStatus()).json({ error: getMessage(err) });
@@ -100,23 +93,23 @@ export async function deleteProduct(req: Request, res: Response) {
         if (!walletParams.walletAddress && !walletParams.walletId) throw new Error('walletAddress o walletId es requerido');
 
         const userId = await resolveUserId(walletParams);
-        const result = await productService.deleteProduct(req.params.id, userId);
+        const productId = req.params.id;
+        if (!productId) throw new Error('ID de producto requerido');
+        const result = await productService.deleteProduct(productId, userId);
         res.json(result);
     } catch (err: unknown) {
         res.status(getStatus()).json({ error: getMessage(err) });
     }
 }
 
-export async function searchProducts(req: Request, res: Response) {
+export async function getProduct(req: Request, res: Response) {
     try {
-        const page = parsePage(req.query?.page);
-        const sort = narrowSort(req.query?.sort);
-        const collection = narrowCollection(req.query?.collection);
-        const result = await productService.searchProducts({ page, sort, collection });
-        console.log('Product search result:', JSON.stringify(result, null, 2));
-        res.json(result);
+        const productId = req.params.id;
+        if (!productId) throw new Error('ID de producto requerido');
+        const product = await productService.getProductById(productId);
+        res.json(product);
     } catch (err: unknown) {
-        res.status(400).json({ error: getMessage(err) });
+        res.status(getStatus()).json({ error: getMessage(err) });
     }
 }
 

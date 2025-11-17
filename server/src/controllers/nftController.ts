@@ -3,17 +3,8 @@ import type { Request, Response } from 'express';
 import { resolveUserId } from '../services/walletService.js';
 import * as nftService from '../services/nftService.js';
 import { uploadImageToIPFS } from '../services/ipfsService.js';
-import type { Category, Rareness, NFTCreate, NFTUpdate } from '../services/nftService.js';
-import type { SortKey } from '../utils/pagination.js';
+import type { Category, Rareness, NFTCreate, NFTUpdate } from '../types/enums.js';
 
-function narrowSort(v: unknown): SortKey | undefined {
-    if (v === 'h-price' || v === 'l-price' || v === 'newest' || v === 'oldest') return v;
-    return undefined;
-}
-function parsePage(v: unknown): number {
-    const n = Number(v);
-    return Number.isFinite(n) && n > 0 ? Math.floor(n) : 1;
-}
 function narrowCategory(v: unknown): Category | undefined {
     if (v === 'art' || v === 'collectible' || v === 'music' || v === 'fresh' || v === 'cyberpunk') return v;
     return undefined;
@@ -64,7 +55,7 @@ export async function createNFT(req: Request, res: Response) {
         const nft = await nftService.createNFT(userId, payload);
         res.status(201).json(nft);
     } catch (err: unknown) {
-        res.status(getStatus(err)).json({ error: getMessage(err) });
+        res.status(getStatus()).json({ error: getMessage(err) });
     }
 }
 
@@ -92,10 +83,12 @@ export async function updateNFT(req: Request, res: Response) {
         if (req.body?.status === 'listed' || req.body?.status === 'sold') payload.status = req.body.status;
 
         const userId = await resolveUserId(walletParams);
-        const nft = await nftService.updateNFT(req.params.id, userId, payload);
+        const nftId = req.params.id;
+        if (!nftId) throw new Error('ID de NFT requerido');
+        const nft = await nftService.updateNFT(nftId, userId, payload);
         res.json(nft);
     } catch (err: unknown) {
-        res.status(getStatus(err)).json({ error: getMessage(err) });
+        res.status(getStatus()).json({ error: getMessage(err) });
     }
 }
 
@@ -107,22 +100,23 @@ export async function deleteNFT(req: Request, res: Response) {
         if (!walletParams.walletAddress && !walletParams.walletId) throw new Error('walletAddress o walletId es requerido');
 
         const userId = await resolveUserId(walletParams);
-        const result = await nftService.deleteNFT(req.params.id, userId);
+        const nftId = req.params.id;
+        if (!nftId) throw new Error('ID de NFT requerido');
+        const result = await nftService.deleteNFT(nftId, userId);
         res.json(result);
     } catch (err: unknown) {
-        res.status(getStatus(err)).json({ error: getMessage(err) });
+        res.status(getStatus()).json({ error: getMessage(err) });
     }
 }
 
-export async function searchNFTs(req: Request, res: Response) {
+export async function getNFT(req: Request, res: Response) {
     try {
-        const page = parsePage(req.query?.page);
-        const sort = narrowSort(req.query?.sort);
-        const result = await nftService.searchNFTs({ page, sort });
-        console.log('NFT search result:', JSON.stringify(result, null, 2));
-        res.json(result);
+        const nftId = req.params.id;
+        if (!nftId) throw new Error('ID de NFT requerido');
+        const nft = await nftService.getNFTById(nftId);
+        res.json(nft);
     } catch (err: unknown) {
-        res.status(400).json({ error: getMessage(err) });
+        res.status(getStatus()).json({ error: getMessage(err) });
     }
 }
 
@@ -137,6 +131,6 @@ export async function getUserNFTs(req: Request, res: Response) {
         const nfts = await nftService.getNFTsByUser(userId);
         res.json({ items: nfts });
     } catch (err: unknown) {
-        res.status(getStatus(err)).json({ error: getMessage(err) });
+        res.status(getStatus()).json({ error: getMessage(err) });
     }
 }

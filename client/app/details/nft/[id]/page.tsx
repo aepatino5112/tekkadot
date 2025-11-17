@@ -1,77 +1,29 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import Gallery from "@/components/Gallery";
 import Button from "@/components/Button";
 import NFTCard from "@/components/NFTCard";
+import { getNFT, searchNFTs } from "@/lib/api";
+import { NFTProps } from "@/types/cards";
 
-// Simulated database call
+// Fetch NFT data from API
 const fetchNFTData = async (id: string) => {
-  // Simulated NFT data
-  const nft = {
-    id,
-    name: "Rare Crypto Art",
-    price: 150.0,
-    rareness: "Legendary",
-    category: "Art",
-    description:
-      "This rare crypto art piece is a one-of-a-kind digital collectible, created by a renowned artist in the blockchain space.",
-    images: ["/images/nft1.jpg", "/images/nft2.jpg", "/images/nft3.jpg"],
-  };
-
-  // Simulated similar NFTs data
-  const similarNFTs = [
-    {
-      id: "2",
-      name: "Epic Crypto Sculpture",
-      price: 200.0,
-      rareness: "Epic",
-      category: "Sculpture",
-      imageUrl: "/images/nft4.jpg",
-    },
-    {
-      id: "3",
-      name: "Rare Crypto Painting",
-      price: 120.0,
-      rareness: "Rare",
-      category: "Painting",
-      imageUrl: "/images/nft5.jpg",
-    },
-    {
-      id: "4",
-      name: "Unique Crypto Design",
-      price: 300.0,
-      rareness: "Unique",
-      category: "Design",
-      imageUrl: "/images/nft6.jpg",
-    },
-    {
-      id: "5",
-      name: "Unique Crypto Design",
-      price: 300.0,
-      rareness: "Unique",
-      category: "Design",
-      imageUrl: "/images/nft6.jpg",
-    },
-  ];
+  const nft = await getNFT(id);
+  // Fetch similar NFTs (first page, no specific sort for now)
+  const similarNFTsResponse = await searchNFTs({ page: 1 });
+  const similarNFTs = similarNFTsResponse.items.slice(0, 4); // Take first 4 as similar
 
   return { nft, similarNFTs };
 };
 
-const NFTDetail = ({ params }: { params: Promise<{ id: string }> }) => {
-  const [nft, setNFT] = useState<any>(null);
-  const [similarNFTs, setSimilarNFTs] = useState<any[]>([]);
-  const [id, setId] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchParams = async () => {
-      const resolvedParams = await params;
-      setId(resolvedParams.id);
-    };
-
-    fetchParams();
-  }, [params]);
+const NFTDetail = () => {
+  const params = useParams();
+  const [nft, setNFT] = useState<NFTProps | null>(null);
+  const [similarNFTs, setSimilarNFTs] = useState<NFTProps[]>([]);
+  const id = (params as { id: string }).id;
 
   useEffect(() => {
     if (!id) return;
@@ -103,7 +55,7 @@ const NFTDetail = ({ params }: { params: Promise<{ id: string }> }) => {
       <div className="flex flex-col lg:flex-row gap-8 mt-6">
         {/* NFT Gallery */}
         <div className="flex-1">
-          <Gallery images={nft.images} type="nft" />
+          <Gallery images={[nft.imageUrl]} type="nft" />
         </div>
 
         {/* NFT Details */}

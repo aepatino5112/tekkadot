@@ -39,26 +39,28 @@ export async function deleteNFT(nftId: string, userId: string) {
     return { success: true };
 }
 
-export async function getNFTsByUser(userId: string) {
+export async function getNFTById(nftId: string) {
     const { data, error } = await supabase
         .from('nfts')
         .select('*')
-        .eq('creator_id', userId)
-        .order('created_at', { ascending: false });
+        .eq('nft_id', nftId)
+        .eq('status', 'listed')
+        .single();
     if (error) throw new HttpError(400, error.message);
-    return (data ?? []).map(item => ({
+    if (!data) throw new HttpError(404, 'NFT no encontrado');
+    return {
         type: 'nft' as const,
-        id: item.nft_id,
-        name: item.title || 'Unnamed NFT',
-        description: item.description || '',
-        category: item.category,
-        rareness: item.rareness,
-        price: item.price,
-        imageUrl: item.ipfs_hash ? ipfsGatewayUrl(item.ipfs_hash) : '',
-        status: item.status,
-        created_at: item.created_at,
-        creator_id: item.creator_id,
-    }));
+        id: data.nft_id,
+        name: data.title || 'Unnamed NFT',
+        description: data.description || '',
+        category: data.category,
+        rareness: data.rareness,
+        price: data.price,
+        imageUrl: data.ipfs_hash ? ipfsGatewayUrl(data.ipfs_hash) : '',
+        status: data.status,
+        created_at: data.created_at,
+        creator_id: data.creator_id,
+    };
 }
 
 export async function searchNFTs(params: { page: number; sort?: SortKey }) {
@@ -100,4 +102,26 @@ export async function searchNFTs(params: { page: number; sort?: SortKey }) {
             sort: params.sort ?? 'newest',
         },
     };
+}
+
+export async function getNFTsByUser(userId: string) {
+    const { data, error } = await supabase
+        .from('nfts')
+        .select('*')
+        .eq('creator_id', userId)
+        .order('created_at', { ascending: false });
+    if (error) throw new HttpError(400, error.message);
+    return (data ?? []).map(item => ({
+        type: 'nft' as const,
+        id: item.nft_id,
+        name: item.title || 'Unnamed NFT',
+        description: item.description || '',
+        category: item.category,
+        rareness: item.rareness,
+        price: item.price,
+        imageUrl: item.ipfs_hash ? ipfsGatewayUrl(item.ipfs_hash) : '',
+        status: item.status,
+        created_at: item.created_at,
+        creator_id: item.creator_id,
+    }));
 }

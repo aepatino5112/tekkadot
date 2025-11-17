@@ -39,6 +39,29 @@ export async function deleteProduct(productId: string, userId: string) {
     return { success: true };
 }
 
+export async function getProductById(productId: string) {
+    const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('product_id', productId)
+        .eq('status', 'listed')
+        .single();
+    if (error) throw new HttpError(400, error.message);
+    if (!data) throw new HttpError(404, 'Producto no encontrado');
+    return {
+        type: 'product' as const,
+        id: data.product_id,
+        name: data.title || 'Unnamed Product',
+        description: data.description || '',
+        collection: data.collection,
+        price: data.price,
+        imageUrl: data.ipfs_hash ? ipfsGatewayUrl(data.ipfs_hash) : '',
+        status: data.status,
+        created_at: data.created_at,
+        seller_id: data.seller_id,
+    };
+}
+
 export async function getProductsByUser(userId: string) {
     const { data, error } = await supabase
         .from('products')
