@@ -1,9 +1,10 @@
 export type WalletType = 'talisman' | 'subwallet' | 'polkadotjs';
 
-export interface ConnectedWallet {
+export type ConnectedWallet = {
   address: string;
   walletType: WalletType;
-}
+  source: string;
+};
 
 export interface SessionUser {
   user_id: string;

@@ -1,1 +1,1 @@
-{"version":3,"file":"wallets.d.ts","sourceRoot":"","sources":["../../../src/drizzle/tables/wallets.ts"],"names":[],"mappings":"AAIA,eAAO,MAAM,UAAU,+EAAiE,CAAC;AAEzF,eAAO,MAAM,YAAY;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;EAMvB,CAAC"}
+{"version":3,"file":"wallets.d.ts","sourceRoot":"","sources":["../../../src/drizzle/tables/wallets.ts"],"names":[],"mappings":"AAIA,eAAO,MAAM,UAAU,+EAAiE,CAAC;AAEzF,eAAO,MAAM,YAAY;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;EAMvB,CAAC"}

@@ -1,5 +1,5 @@
 {
-  "id": "95b0fc67-e6a5-416f-add2-70b3747afb15",
+  "id": "d65e1e37-db8a-4957-af52-efe8251ba212",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -677,7 +677,7 @@
         },
         "wallet_address": {
           "name": "wallet_address",
-          "type": "varchar(128)",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },

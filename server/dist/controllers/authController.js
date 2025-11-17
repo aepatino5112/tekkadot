@@ -10,13 +10,12 @@ export class AuthController {
         return res.json({ nonce, expiresAt });
     }
     static async verify(req, res) {
+        const { wallet_address, wallet_type, signature } = req.body;
+        if (!wallet_address || !wallet_type || !signature) {
+            return res.status(400).json({ error: 'Missing wallet_address, wallet_type, or signature' });
+        }
         try {
-            const { wallet_address, wallet_type, signature } = req.body;
-            if (!wallet_address || !wallet_type || !signature) {
-                return res.status(400).json({ error: 'wallet_address, wallet_type and signature required' });
-            }
             const { token, user_id, wallet_id } = await AuthService.verifyAndLogin(wallet_address, wallet_type, signature);
-            // Set httpOnly JWT cookie
             res.cookie(COOKIE_NAME, token, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
@@ -26,9 +25,10 @@ export class AuthController {
             });
             return res.json({ user_id, wallet_id });
         }
-        catch (e) {
-            const message = e instanceof Error ? e.message : String(e);
-            return res.status(401).json({ error: message });
+        catch (err) {
+            const message = err instanceof Error ? err.message : String(err);
+            const isAuthError = message.includes('Nonce') || message.includes('signature');
+            return res.status(isAuthError ? 401 : 500).json({ error: message });
         }
     }
     static async session(req, res) {

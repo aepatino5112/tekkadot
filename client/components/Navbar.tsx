@@ -121,7 +121,7 @@ const Navbar = ({
     color: brandColor ?? brands[variant].color,
   };
 
-  const { user, connect, disconnect, loading, error } = useWalletContext();
+  const { user, connect, disconnect } = useWalletContext();
 
   return (
     <header>

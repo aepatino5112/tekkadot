@@ -7,44 +7,48 @@ function sourceToWalletType(source?: string): WalletType {
   return 'polkadotjs';
 }
 
-export async function enableExtensions(appName = 'Tekka') {
-  const { web3Enable } = await import('@polkadot/extension-dapp');
-  const injected = await web3Enable(appName);
-  if (!injected.length) throw new Error('No wallet extensions found');
-}
-
-export async function connectFirstAccount(): Promise<ConnectedWallet> {
+export async function connectFirstAccount(walletType?: WalletType): Promise<ConnectedWallet> {
   const { web3Enable, web3Accounts } = await import('@polkadot/extension-dapp');
   await web3Enable('Tekka');
+
   const accounts = await web3Accounts();
-  if (!accounts.length) throw new Error('No accounts available. Please unlock your wallet or authorize Tekka.');
-  const selected = accounts[0];
+
+  const filteredAccounts = walletType
+    ? accounts.filter(acc => sourceToWalletType(acc.meta?.source) === walletType)
+    : accounts;
+
+  if (!filteredAccounts.length) {
+    throw new Error(`No accounts found in ${walletType || 'any wallet'}. Please unlock or authorize Tekka.`);
+  }
+
+  const selected = filteredAccounts[0];
+  const source = selected.meta?.source || 'polkadot-js';
   return {
     address: selected.address,
-    walletType: sourceToWalletType(selected.meta?.source)
+    walletType: sourceToWalletType(source),
+    source
   };
 }
 
-export async function signNonce(address: string, nonce: string): Promise<string> {
-  const { web3FromAddress } = await import('@polkadot/extension-dapp');
-  const injector = await web3FromAddress(address);
-  const signer = injector?.signer;
+export async function signNonce(address: string, nonce: string, source: string): Promise<string> {
+    const { web3FromSource } = await import('@polkadot/extension-dapp');
+    const injector = await web3FromSource(source);
+    const signer = injector?.signer;
 
-  if (!signer?.signRaw) {
-    throw new Error('Wallet signer not available or does not support signRaw');
-  }
+    if (!signer?.signRaw) {
+        throw new Error('Wallet signer not available or does not support signRaw');
+    }
 
-  const signed = await signer.signRaw({
-    address,
-    data: stringToHex(nonce),
-    type: 'bytes'
-  });
+    // Server returns a hex nonce (without 0x). Sign the raw hex bytes by ensuring "0x" prefix.
+    const dataToSign = nonce.startsWith('0x') ? nonce : `0x${nonce}`;
 
-  return signed.signature;
+    const signed = await signer.signRaw({
+        address,
+        data: dataToSign,
+        type: 'bytes'
+    });
+
+    return signed.signature;
 }
 
-function stringToHex(str: string): `0x${string}` {
-  const buf = new TextEncoder().encode(str);
-  return ('0x' + Array.from(buf).map(b => b.toString(16).padStart(2, '0')).join('')) as `0x${string}`;
-}
 

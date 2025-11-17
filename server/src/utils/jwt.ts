@@ -10,7 +10,7 @@ export type JwtPayload = {
 
 export function signJwt(payload: JwtPayload, opts?: SignOptions) {
     return jwt.sign(payload, process.env.JWT_SECRET as string, {
-        expiresIn: opts?.expiresIn ?? '15m',
+        expiresIn: opts?.expiresIn ?? '120m',
         ...opts
     });
 }

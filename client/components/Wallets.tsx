@@ -3,6 +3,7 @@ import { Wallet, X } from 'lucide-react';
 import WalletOption from "./WalletOption";
 import { useWalletContext } from "@/context/WalletContext";
 import toast from "react-hot-toast";
+import { WalletType } from "@/types/wallet";
 
 
 interface WalletsProps {
@@ -12,16 +13,16 @@ interface WalletsProps {
 const Wallets = ({ onClose }: WalletsProps) => {
   const { connect } = useWalletContext();
 
-    const handleConnect = async () => {
-        try {
-            await connect();
-            onClose(); // only close if connect succeeds
-        } catch (err) {
-            const message = err instanceof Error ? err.message : 'Unknown error';
-            toast.error(message);
-        }
-    };
-
+   const handleConnect = async (walletType: WalletType) => {
+      try {
+        await connect(walletType);
+        onClose();
+        toast.success("Wallet connected");
+      } catch (err) {
+        const message = err instanceof Error ? err.message : "Unknown error";
+        toast.error(message);
+      }
+   };
 
   return (
     <div className="wallet-modal-overlay" role="dialog" aria-modal="true" onClick={onClose}>
@@ -49,14 +50,14 @@ const Wallets = ({ onClose }: WalletsProps) => {
               </div>
             </div>
             <div className="flex flex-col justify-between items-center gap-6">
-              <WalletOption name="Talisman" onClick={handleConnect} />
-              <WalletOption name="SubWallet" onClick={handleConnect} />
-              <WalletOption name="Polkadot.Js" onClick={handleConnect} />
+              <WalletOption name="Talisman" onClick={() => handleConnect("talisman")} />
+              <WalletOption name="SubWallet" onClick={() => handleConnect("subwallet")} />
+              <WalletOption name="Polkadot.Js" onClick={() => handleConnect("polkadotjs")} />
             </div>
             <div>
               <p className="text-200 text-black-500 leading-300 pt-12 dark:text-white-500">
                 By connecting your wallet, you agree to our{" "}
-                <Link href="/terms" className="wallet-terms">Terms of Service</Link> and{" "}
+                <Link href="/service-terms" className="wallet-terms">Terms of Service</Link> and{" "}
                 <Link href="/privacy-policy" className="wallet-terms">Privacy Policy</Link>
               </p>
             </div>

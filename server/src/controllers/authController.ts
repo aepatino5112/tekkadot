@@ -14,26 +14,33 @@ export class AuthController {
         return res.json({ nonce, expiresAt });
     }
 
-    static async verify(req: Request, res: Response) {
+    static async connect(req: Request, res: Response) {
+        const { wallet_address, wallet_type, signature } = req.body;
+        if (!wallet_address || !wallet_type || !signature) {
+            return res.status(400).json({ error: 'Missing wallet_address, wallet_type, or signature' });
+        }
+
         try {
-            const { wallet_address, wallet_type, signature } = req.body;
-            if (!wallet_address || !wallet_type || !signature) {
-                return res.status(400).json({ error: 'wallet_address, wallet_type and signature required' });
+            let result;
+            if (req.user) {
+            // Already logged in → link wallet
+                result = await AuthService.linkWallet(req.user.user_id, wallet_address, wallet_type, signature);
+            } else {
+            // No session → login
+                result = await AuthService.verifyAndLogin(wallet_address, wallet_type, signature);
+
+                res.cookie(COOKIE_NAME, result.token, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === 'production',
+                    sameSite: 'lax',
+                    path: '/',
+                    maxAge: 2 * 60 * 60 * 1000, // ⏰ 2 hours
+                });
             }
-            const { token, user_id, wallet_id } = await AuthService.verifyAndLogin(wallet_address, wallet_type, signature);
 
-            // Set httpOnly JWT cookie
-            res.cookie(COOKIE_NAME, token, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'lax',
-                path: '/',
-                maxAge: 15 * 60 * 1000
-            });
-
-            return res.json({ user_id, wallet_id });
-        } catch (e: unknown) {
-            const message = e instanceof Error ? e.message : String(e);
+            return res.json(result);
+        } catch (err) {
+            const message = err instanceof Error ? err.message : String(err);
             return res.status(401).json({ error: message });
         }
     }
@@ -48,3 +55,4 @@ export class AuthController {
         res.status(204).end();
     }
 }
+

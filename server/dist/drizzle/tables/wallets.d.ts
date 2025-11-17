@@ -41,7 +41,7 @@ export declare const WalletsTable: import("drizzle-orm/pg-core").PgTableWithColu
             name: "wallet_address";
             tableName: "wallets";
             dataType: "string";
-            columnType: "PgVarchar";
+            columnType: "PgText";
             data: string;
             driverParam: string;
             notNull: true;
@@ -53,9 +53,7 @@ export declare const WalletsTable: import("drizzle-orm/pg-core").PgTableWithColu
             baseColumn: never;
             identity: undefined;
             generated: undefined;
-        }, {}, {
-            length: 128;
-        }>;
+        }, {}, {}>;
         created_at: import("drizzle-orm/pg-core").PgColumn<{
             name: "created_at";
             tableName: "wallets";

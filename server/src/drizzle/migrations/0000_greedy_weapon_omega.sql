@@ -87,7 +87,7 @@ CREATE TABLE "users" (
 CREATE TABLE "wallets" (
 	"wallet_id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"wallet_type" "wallet_type" NOT NULL,
-	"wallet_address" varchar(128) NOT NULL,
+	"wallet_address" text NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"user_id" uuid NOT NULL,
 	CONSTRAINT "wallets_wallet_address_unique" UNIQUE("wallet_address")

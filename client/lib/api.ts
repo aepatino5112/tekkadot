@@ -1,37 +1,48 @@
-'use client';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
 
-const API = process.env.NEXT_PUBLIC_API_URL as string;
+export async function issueNonce(wallet_address: string, wallet_type: string) {
+  const res = await fetch(`${API_BASE}/api/auth/nonce`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ wallet_address, wallet_type }),
+    credentials: 'include'
+  });
 
-async function json<T extends Record<string, unknown>>(res: Response): Promise<T> {
-  const data = await res.json().catch(() => ({} as T));
   if (!res.ok) {
-    const errorMessage = (data as Record<string, unknown>)?.error;
-    throw new Error(typeof errorMessage === 'string' ? errorMessage : `HTTP ${res.status}`);
+    const err = await res.text();
+    throw new Error(err || "Failed to issue nonce");
   }
-  return data;
+
+  return res.json() as Promise<{ nonce: string }>;
 }
 
-export async function issueNonce(wallet_address: string) {
-  const res = await fetch(`${API}/auth/nonce`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-    body: JSON.stringify({ wallet_address })
+export async function connectWallet(wallet_address: string, wallet_type: string, signature: string) {
+  const res = await fetch(`${API_BASE}/api/auth/connect`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ wallet_address, wallet_type, signature }),
+    credentials: 'include'
   });
-  return json<{ nonce: string }>(res);
+
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(err || "Failed to connect wallet");
+  }
+
+  return res.json() as Promise<{
+    user_id: string;
+    wallet_id: string;
+  }>;
 }
 
-export async function verifySignature(wallet_address: string, wallet_type: string, signature: string) {
-  const res = await fetch(`${API}/auth/verify`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-    body: JSON.stringify({ wallet_address, wallet_type, signature })
-  });
-  return json<{ user_id: string; wallet_id: string }>(res);
-}
 
 export async function fetchSession() {
-  const res = await fetch(`${API}/auth/session`, { credentials: 'include' });
-  return json<{ user: { user_id: string; wallet_id: string; wallet_address: string; wallet_type: string } }>(res);
+  const res = await fetch(`${API_BASE}/api/auth/session`, { method: "GET", credentials: 'include' });
+  if (!res.ok) throw new Error("Failed to fetch session");
+  return res.json() as Promise<{ user: {
+    user_id: string;
+    wallet_id: string;
+    wallet_address: string;
+    wallet_type: string;
+  }}>;
 }

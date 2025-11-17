@@ -9,7 +9,7 @@ export default defineConfig({
     out: 'src/drizzle/migrations',
     dialect: 'postgresql',
     dbCredentials: {
-        url: `postgresql://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}`,
+        url: `postgres://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}`
     },
 });
 //# sourceMappingURL=drizzle.config.js.map
